@@ -261,6 +261,7 @@ const ROYAUMES_DATA = [
 let quetesState = {};
 
 // CHARGEMENT DEPUIS JSONBIN ET LOCALSTORAGE
+// CHARGEMENT DEPUIS JSONBIN ET LOCALSTORAGE
 async function loadState() {
   const saved = localStorage.getItem(LOCAL_KEY);
   if (saved) {
@@ -273,7 +274,8 @@ async function loadState() {
 
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-      // JSONBin v3 nécessite X-Access-Key quand c'est une Access Key
+      // On force le téléphone à toujours demander la dernière version, sans utiliser son cache !
+      cache: 'no-store',
       headers: { 'X-Access-Key': API_KEY } 
     });
     if (res.ok) {
@@ -290,6 +292,38 @@ async function loadState() {
   renderAll();
 }
 
+// SAUVEGARDE SUR JSONBIN
+async function saveState() {
+  // Sauvegarde locale instantanée (ce qui te donne l'illusion que ça marche sur PC)
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(quetesState));
+  renderAll();
+
+  const syncElem = document.getElementById('sync-status');
+  if(syncElem) syncElem.textContent = "⏳ Sauvegarde cloud en cours...";
+
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Key': API_KEY 
+      },
+      body: JSON.stringify(quetesState)
+    });
+    
+    if(syncElem) {
+      if(res.ok) {
+        syncElem.textContent = "✓ Enregistré en ligne pour tous les joueurs!";
+      } else {
+        // Si ça plante, on veut savoir POURQUOI !
+        const err = await res.json();
+        syncElem.textContent = `⚠️ Erreur JSONBin: ${err.message || res.status}`;
+      }
+    }
+  } catch(e) {
+    if(syncElem) syncElem.textContent = "⚠️ Échec : Impossible de joindre le serveur Cloud.";
+  }
+}
 // SAUVEGARDE SUR JSONBIN
 async function saveState() {
   localStorage.setItem(LOCAL_KEY, JSON.stringify(quetesState));
