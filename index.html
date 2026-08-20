@@ -303,17 +303,24 @@ async function saveState() {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        // Utilisation de la même clé d'accès pour écrire
         'X-Access-Key': API_KEY 
       },
       body: JSON.stringify(quetesState)
     });
+    
     if(syncElem) {
-      if(res.ok) syncElem.textContent = "✓ Enregistré en ligne pour tous les joueurs!";
-      else syncElem.textContent = "⚠️ Sauvegardé uniquement en local.";
+      if(res.ok) {
+        syncElem.textContent = "✓ Enregistré en ligne pour tous les joueurs!";
+      } else {
+        // On récupère le message d'erreur EXACT de JSONBin
+        const err = await res.json();
+        console.error("Erreur JSONBin détaillée :", err);
+        syncElem.textContent = `⚠️ Erreur JSONBin: ${err.message || res.status}`;
+      }
     }
   } catch(e) {
-    if(syncElem) syncElem.textContent = "⚠️ Sauvegardé uniquement en local (Hors-ligne).";
+    if(syncElem) syncElem.textContent = "⚠️ Échec de connexion au serveur Cloud.";
+    console.error("Erreur réseau :", e);
   }
 }
 
