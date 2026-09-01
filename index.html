@@ -27,36 +27,97 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .nav-admin-btn:hover{color:var(--violet-light);border-color:var(--violet);}
 .page{display:none;position:relative;z-index:1;padding-top:66px;min-height:100vh;}
 .page.active{display:block;}
-/* CARTE ROYAUMES */
-#page-carte{padding:66px 0 2rem;}
 .page-h{text-align:center;padding:2rem 1.25rem 1.5rem;}
 .page-h h1{font-family:'Cinzel',serif;font-size:clamp(22px,5vw,42px);font-weight:700;background:linear-gradient(135deg,var(--gold-light),var(--violet-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem;}
 .page-h p{font-size:15px;font-style:italic;color:var(--text-dim);}
-.royaumes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;padding:0 1.25rem;max-width:1100px;margin:0 auto;}
-.royaume-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s;}
-.royaume-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,168,76,.15);}
-.royaume-header{padding:1rem 1.1rem .7rem;display:flex;align-items:center;gap:.75rem;}
-.royaume-icon{font-size:28px;flex-shrink:0;}
-.royaume-name{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);}
-.royaume-sub{font-size:12px;color:var(--text-faint);font-style:italic;}
-.royaume-quetes{padding:0 1.1rem 1rem;}
-.quete-pill{display:flex;align-items:center;gap:.5rem;padding:.35rem .6rem;border-radius:8px;margin-bottom:.35rem;background:var(--surface);border:1px solid var(--border);transition:all .2s;}
-.quete-pill:hover{border-color:var(--violet);}
-.qp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.dot-hidden{background:var(--text-faint);opacity:.4;}
-.dot-rumeur{background:var(--violet);animation:pulse 2s infinite;}
-.dot-active{background:var(--gold);}
-.dot-complete{background:#2A6B3A;}
-@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
-.qp-name{font-size:13px;color:var(--text-dim);flex:1;}
-.qp-name.hidden-name{color:var(--text-faint);font-style:italic;}
-.qp-diff{font-family:'Cinzel',serif;font-size:9px;color:var(--text-faint);}
-.no-quetes{font-size:13px;color:var(--text-faint);font-style:italic;padding:.5rem 0;}
+
+/* CARTE INTERACTIVE */
+#page-carte{padding:66px 0 2rem;}
+.interactive-map {
+  position: relative;
+  width: 95%;
+  max-width: 1100px;
+  aspect-ratio: 16/10;
+  margin: 0 auto;
+  background: radial-gradient(circle at center, #1A1530 0%, #080610 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.map-bg-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 2;
+}
+.map-pin:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+  z-index: 10;
+}
+.pin-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 15px currentColor;
+  border: 2px solid var(--void);
+  position: relative;
+}
+.pin-dot::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: 0.5;
+  animation: pulse 2s infinite;
+}
+.pin-label {
+  margin-top: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  background: rgba(8,6,16,0.85);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+}
+.pin-status {
+  position: absolute;
+  top: -8px; right: -12px;
+  font-size: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+
 /* JOURNAL */
 #page-journal{padding:66px 0 2rem;}
 .journal-entry{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin-bottom:1rem;overflow:hidden;}
 .je-header{padding:.9rem 1.1rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;}
 .je-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-hidden{background:var(--text-faint);opacity:.4;}
+.dot-rumeur{background:var(--violet);animation:pulse 2s infinite;}
+.dot-active{background:var(--gold);}
+.dot-complete{background:#2A6B3A;}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 .je-title{font-family:'Cinzel',serif;font-size:13px;color:var(--text);flex:1;}
 .je-title.rumeur{color:var(--violet-light);}
 .je-title.complete{color:#4A9B5A;}
@@ -75,6 +136,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .filter-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
 .filter-btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer;transition:all .2s;}
 .filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08);}
+
 /* TABLEAU */
 #page-tableau{padding:66px 0 2rem;}
 .stats-row{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem;}
@@ -90,6 +152,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .tq-name{font-family:'Cinzel',serif;font-size:12px;color:var(--text);}
 .tq-royaume{font-size:11px;color:var(--text-faint);font-style:italic;}
 .tq-diff{font-size:11px;color:var(--text-faint);margin-top:.3rem;}
+
 /* ZONES */
 #page-zones{padding:66px 0 2rem;}
 .zones-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1100px;margin:0 auto;padding:0 1.25rem;}
@@ -102,6 +165,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .zone-lieu{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid rgba(46,37,80,.4);font-size:13px;color:var(--text-dim);}
 .zone-lieu:last-child{border-bottom:none;}
 .zone-lieu::before{content:'✦';color:var(--text-faint);font-size:9px;flex-shrink:0;}
+
 /* ADMIN */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(8,6,16,.92);z-index:200;align-items:center;justify-content:center;padding:1.25rem;backdrop-filter:blur(4px);}
 .modal-overlay.open{display:flex;animation:fadeIn .25s;}
@@ -125,14 +189,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .admin-perso-input:focus{border-color:var(--gold-dim);}
 .admin-section-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-faint);margin:1.25rem 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
 .error-msg{font-size:13px;color:#E07070;margin-top:.4rem;font-style:italic;}
-@media(max-width:500px){
-  .royaumes-grid,.zones-grid{grid-template-columns:1fr;}
-  .tableau-grid{grid-template-columns:1fr;}
-  .stats-row{gap:.5rem;}
-  .stat-box{min-width:80px;padding:.6rem .9rem;}
-  .nav-tabs{gap:.1rem;}
-  .nav-tab{font-size:8px;padding:.28rem .4rem;}
-  .aqr-top{flex-direction:column;align-items:flex-start;gap:.3rem;}
+
+@media(max-width:600px){
+  .interactive-map { aspect-ratio: 1/1; }
+  .pin-label { font-size: 9px; padding: 2px 4px; }
+  .zones-grid, .tableau-grid { grid-template-columns: 1fr; }
+  .stats-row { gap: .5rem; }
+  .stat-box { min-width: 80px; padding: .6rem .9rem; }
+  .nav-tabs { gap: .1rem; }
+  .nav-tab { font-size: 8px; padding: .28rem .4rem; }
+  .aqr-top { flex-direction: column; align-items: flex-start; gap: .3rem; }
 }
 </style>
 </head>
@@ -151,8 +217,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 
 <!-- CARTE ROYAUMES -->
 <div class="page active" id="page-carte">
-  <div class="page-h"><h1>Carte des Royaumes</h1><p>Explorez les territoires. Les quêtes se révèlent à ceux qui cherchent.</p></div>
-  <div class="royaumes-grid" id="royaumes-grid"></div>
+  <div class="page-h">
+    <h1>Carte des Royaumes</h1>
+    <p>Sélectionnez un point d'ancrage pour consulter ses quêtes.</p>
+  </div>
+  <div class="interactive-map" id="interactive-map">
+    <!-- Pour mettre ton dessin en fond, décommente la ligne du dessous et mets le bon nom d'image -->
+    <!-- <img src="image.png" class="map-bg-img" alt="Carte de fond"> -->
+    <div id="map-pins-container"></div>
+  </div>
 </div>
 
 <!-- JOURNAL -->
@@ -234,30 +307,30 @@ const QUETES_DATA = [
   {id:'q_muji',royaume:'mujiland',nom:'La Nihilité',rumeur:'Le royaume de Muji dérange ceux qui s\'y aventurent. Les incohérences s\'accumulent.',desc:'Mujiland résiste à toute logique. Et pourtant, quelqu\'un ici sait très bien ce qu\'il fait.',hint:'Cherchez ce qui ne colle pas. Cherchez encore.',prereqs:['Payer le tribut céleste de Mujiland','Quelqu\'un sur l\'arc de Kye Rong'],diff:'★★★★☆',type:'principale'},
   {id:'q_kyerong',royaume:'circcus',nom:'L\'Allégresse',rumeur:'The Circcus déborde de fête et de lumière. Mais quelque chose dans les yeux de Kye Rong ne rit pas vraiment.',desc:'Kye Rong règne sur The Circcus avec une joie peut-être trop parfaite. Et son lien avec Muji intrigue.',hint:'Regardez ce qui se passe quand personne ne regarde.',prereqs:['Payer le tribut céleste de The Circcus','Quelqu\'un sur l\'arc de Muji'],diff:'★★★★☆',type:'principale'},
   {id:'q_ran',royaume:'essaim',nom:'La Propagation',rumeur:'L\'Essaim se présente comme une famille. Les familles n\'ont pas toutes ces règles.',desc:'Ran se répand. Ses suiveurs aussi. Ce qui se passe à l\'intérieur de l\'Essaim se répand rarement au-dehors.',hint:'Commencez par celle-ci. Beaucoup d\'autres en dépendent.',prereqs:['Payer le tribut céleste de l\'Essaim'],diff:'★★★☆☆',type:'principale'},
-  {id:'q_imu',royaume:'herakhet',nom:'L\'Équilibre',rumeur:'Imu maintient l\'équilibre depuis Herakhet. Gagner sa confiance est une chose dont on ne revient pas inchangé.',desc:'L\'arc le plus difficile d\'accès. Imu ne reçoit que ceux qui ont prouvé leur valeur — et fait de grandes concessions.',hint:'Devenez chevalier divin. Sinon, n\'essayez pas.',prereqs:['Payer le tribut céleste de Herakhet','Devenir chevalier divin d\'Imu'],diff:'★★★★★',type:'principale'},
+  {id:'q_imu',royaume:'herakhet',nom:'L\'Équilibre',rumeur:'Imu maintient l\'équilibre depuis Herakhet. Gagner sa confiance est une chose dont on ne revient pas inchangé.',desc:'L\'arc le plus difficile d\'accès. Imu ne reçoit que ceux qui ont prouvé force et loyauté.',hint:'Devenez chevalier divin. Sinon, n\'essayez pas.',prereqs:['Payer le tribut céleste de Herakhet','Devenir chevalier divin d\'Imu'],diff:'★★★★★',type:'principale'},
   {id:'q_nirumu',royaume:'herakhet',nom:'L\'Arbre Monde',rumeur:'Quelque chose pousse sous Herakhet. Quelque chose qui ne devrait plus bouger.',desc:'Nirumu, l\'Arbre Monde, n\'est pas qu\'un arbre. Ce qu\'il était avant vous attend en dessous.',hint:'Accédez à Herakhet. Approchez les racines. Écoutez.',prereqs:['Accès à Herakhet (Morgott ou 43)'],diff:'★★★☆☆',type:'secondaire'},
   {id:'q_mihawk',royaume:'herakhet',nom:'Mihawk',rumeur:'Un fils d\'Imu que personne ne mentionne. Pourtant le plus grand épéiste de l\'univers connu.',desc:'Mihawk se considère au-dessus de la plupart des considérations. Obtenir son attention est déjà une victoire.',hint:'He Xuan ou 43 peuvent vous introduire. Ou venez le défier.',prereqs:['Introduction via He Xuan ou 43'],diff:'★★★☆☆',type:'secondaire'},
   {id:'q_kyesook',royaume:'planete43',nom:'L\'Énigmata',rumeur:'???',desc:'Kye Sook, le Dissident, murmure depuis son exil. Le trouver est presque impossible. L\'écouter est dangereux.',hint:'Certaines portes ne s\'ouvrent que depuis l\'autre côté.',prereqs:['Arc de 43 terminé','Être entité mémorielle OU place au tribunal de Falconia'],diff:'★★★★★',type:'principale'},
   {id:'q_guifa',royaume:'atlantis',nom:'L\'Érudition',rumeur:'La bibliothèque d\'Atlantis contient tout ce qui a jamais été su. Ou presque.',desc:'Gui Fa et sa bibliothèque offrent un savoir sans pareil. Mais accéder aux archives profondes a un prix.',hint:'Les bonnes questions ouvrent plus de portes que les bonnes réponses.',prereqs:[],diff:'☆☆☆☆☆',type:'principale'},
   {id:'q_undertaker',royaume:'jardin',nom:'Le Souvenir',rumeur:'Il existe un endroit entre les morts et les vivants. Et quelqu\'un y tient des archives.',desc:'Le Jardin de la Mémoire d\'Undertaker archive tout ce qui a existé. Y accéder change la façon dont on voit le cosmos.',hint:'Commencez par l\'arc de 43. Ou trouvez un autre chemin.',prereqs:['Arc de 43 commencé OU être entité mémorielle'],diff:'★★☆☆☆',type:'principale'},
   {id:'q_kuya',royaume:'kuya',nom:'La Voracité',rumeur:'Un nouveau dieu prend forme quelque part. Il cherche des premiers servants.',desc:'Kuya hérite d\'une Voie ancienne. Son royaume n\'existe pas encore. Vous pouvez être là depuis le début.',hint:'Soyez parmi les premiers à répondre à son appel.',prereqs:['Devenir premier servant de Kuya'],diff:'★★☆☆☆',type:'principale'},
-  {id:'q_mohg',royaume:'entreterre',nom:'Mohg — La Dévotion',rumeur:'Dans les profondeurs de Mohgwyn, quelqu\'un prie une entité que personne d\'autre ne voit…',desc:'Mohg, fils d\'Imu et Marika, a tourné le dos au Panthéon pour se vouer à quelque chose d\'extérieur à la causalité. Ce qu\'il sert est réel. Et ça grandit.',hint:'Mohgwyn se trouve dans l\'Entre-Terre. Il faut y descendre — personne ne vous y invite.',prereqs:['Avoir progressé dans l\'arc d\'Imu','Accès à l\'Entre-Terre'],diff:'★★★★☆',type:'secondaire'},
+  {id:'q_mohg',royaume:'entreterre',nom:'Mohg — La Dévotion',rumeur:'Dans les profondeurs de Mohgwyn, quelqu\'un prie une entité que personne d\'autre ne voit…',desc:'Mohg a tourné le dos au Panthéon pour se vouer à quelque chose d\'extérieur à la causalité.',hint:'Mohgwyn se trouve dans l\'Entre-Terre. Il faut y descendre.',prereqs:['Avoir progressé dans l\'arc d\'Imu','Accès à l\'Entre-Terre'],diff:'★★★★☆',type:'secondaire'},
 ];
 
 const ROYAUMES_DATA = [
-  {id:'axiom',nom:'Axiøm',icon:'🏛',sub:'Panthéon — Kenjaku · Imu'},
-  {id:'akropis',nom:'Akropis',icon:'⚔',sub:'Destruction — Ju Fa'},
-  {id:'allpink',nom:'All Pink',icon:'🌿',sub:'Abondance — Tao Fa'},
-  {id:'falconia',nom:'Falconia',icon:'🎯',sub:'Chasse — Griffith'},
-  {id:'mujiland',nom:'Mujiland',icon:'🕳',sub:'Nihilité — Muji'},
-  {id:'circcus',nom:'The Circcus',icon:'🎉',sub:'Allégresse — Kye Rong'},
-  {id:'essaim',nom:'L\'Essaim',icon:'🦟',sub:'Propagation — Ran'},
-  {id:'herakhet',nom:'Herakhet',icon:'⚖',sub:'Équilibre — Imu'},
-  {id:'planete43',nom:'Planète 43',icon:'❓',sub:'Énigmata — Kye Sook'},
-  {id:'atlantis',nom:'Atlantis',icon:'🧠',sub:'Érudition — Gui Fa'},
-  {id:'jardin',nom:'Jardin de la Mémoire',icon:'⌛',sub:'Souvenir — Undertaker'},
-  {id:'kuya',nom:'Territoire de Kuya',icon:'🫗',sub:'Voracité — Kuya'},
-  {id:'entreterre',nom:'L\'Entre-Terre',icon:'🩸',sub:'Anciennement Marika — Ordre brisé'},
+  {id:'axiom',nom:'Axiøm',icon:'🏛',sub:'Panthéon',x:50,y:40,color:'#7F77DD'},
+  {id:'allpink',nom:'All Pink',icon:'🌿',sub:'Abondance',x:15,y:20,color:'#4AC97A'},
+  {id:'akropis',nom:'Akropis',icon:'⚔',sub:'Destruction',x:20,y:45,color:'#C94A4A'},
+  {id:'essaim',nom:'L\'Essaim',icon:'🦟',sub:'Propagation',x:15,y:75,color:'#7AC94A'},
+  {id:'atlantis',nom:'Atlantis',icon:'🧠',sub:'Érudition',x:35,y:85,color:'#4A7BC9'},
+  {id:'circcus',nom:'The Circcus',icon:'🎉',sub:'Allégresse',x:65,y:85,color:'#C94AC9'},
+  {id:'falconia',nom:'Falconia',icon:'🎯',sub:'Chasse',x:85,y:55,color:'#C97A4A'},
+  {id:'mujiland',nom:'Mujiland',icon:'🕳',sub:'Nihilité',x:88,y:20,color:'#888880'},
+  {id:'herakhet',nom:'Herakhet',icon:'⚖',sub:'Équilibre',x:50,y:20,color:'#E8C96A'},
+  {id:'planete43',nom:'Planète 43',icon:'❓',sub:'Énigmata',x:85,y:85,color:'#AFA9EC'},
+  {id:'jardin',nom:'Jardin Mémoire',icon:'⌛',sub:'Souvenir',x:70,y:10,color:'#9B96B8'},
+  {id:'kuya',nom:'Territoire Kuya',icon:'🫗',sub:'Voracité',x:30,y:10,color:'#C9A84C'},
+  {id:'entreterre',nom:'Entre-Terre',icon:'🩸',sub:'Ordre brisé',x:50,y:65,color:'#8B2020'}
 ];
 
 const ZONES_DATA = [
@@ -304,28 +377,45 @@ async function saveState() {
   } catch(e) { if(sy) sy.textContent = '⚠ Échec connexion.'; }
 }
 
+function renderCarte() {
+  const container = document.getElementById('map-pins-container');
+  container.innerHTML = '';
+  
+  ROYAUMES_DATA.forEach(r => {
+    const quetes = QUETES_DATA.filter(q => q.royaume === r.id);
+    const actives = quetes.filter(q => quetesState[q.id] === 'active').length;
+    const rumeurs = quetes.filter(q => quetesState[q.id] === 'rumeur').length;
+    
+    let statusBadge = '';
+    if (actives > 0) statusBadge = `<div class="pin-status" style="color:var(--gold); border-color:var(--gold);">${actives}</div>`;
+    else if (rumeurs > 0) statusBadge = `<div class="pin-status" style="color:var(--violet); border-color:var(--violet);">?</div>`;
+
+    const pin = document.createElement('div');
+    pin.className = 'map-pin';
+    pin.style.left = `${r.x}%`;
+    pin.style.top = `${r.y}%`;
+    pin.style.color = r.color;
+    
+    pin.onclick = () => {
+      showPage('journal');
+      setFilter(r.id);
+    };
+
+    pin.innerHTML = `
+      ${statusBadge}
+      <div class="pin-dot"></div>
+      <div class="pin-label">${r.nom}</div>
+    `;
+    
+    container.appendChild(pin);
+  });
+}
+
 function dotClass(s) {
   if(s==='rumeur') return 'dot-rumeur';
   if(s==='active') return 'dot-active';
   if(s==='complete') return 'dot-complete';
   return 'dot-hidden';
-}
-
-function renderCarte() {
-  const grid = document.getElementById('royaumes-grid');
-  grid.innerHTML = '';
-  ROYAUMES_DATA.forEach(r => {
-    const quetes = QUETES_DATA.filter(q=>q.royaume===r.id);
-    const visibles = quetes.filter(q=>quetesState[q.id]!=='hidden'&&quetesState[q.id]!=='disabled');
-    const card = document.createElement('div');
-    card.className = 'royaume-card';
-    card.onclick = () => { showPage('journal'); setFilter(r.id); };
-    let pills = visibles.length === 0
-      ? '<p class="no-quetes">Aucune quête connue dans ce territoire.</p>'
-      : visibles.map(q=>`<div class="quete-pill"><div class="qp-dot ${dotClass(quetesState[q.id])}"></div><span class="qp-name ${quetesState[q.id]==='rumeur'?'hidden-name':''}">${quetesState[q.id]==='rumeur'?'<em>Rumeur…</em>':q.nom}</span><span class="qp-diff">${q.diff}</span></div>`).join('');
-    card.innerHTML = `<div class="royaume-header"><div class="royaume-icon">${r.icon}</div><div><div class="royaume-name">${r.nom}</div><div class="royaume-sub">${r.sub}</div></div></div><div class="royaume-quetes">${pills}</div>`;
-    grid.appendChild(card);
-  });
 }
 
 function setFilter(f) { activeFilter=f; renderJournal(); }
@@ -480,4 +570,4 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
 loadState();
 </script>
 </body>
-</html>i
+</html>
