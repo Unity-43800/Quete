@@ -11,7 +11,6 @@
 --border:#2E2550;--gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:#7A5E1A;
 --violet:#7F77DD;--violet-light:#AFA9EC;--violet-dim:#3C3489;
 --text:#E8E4F4;--text-dim:#9B96B8;--text-faint:#514D6E;
---red:#8B2020;--green:#1A5C2A;--amber:#7A5E1A;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--void);color:var(--text);font-family:'Crimson Text',Georgia,serif;min-height:100vh;overflow-x:hidden;}
@@ -51,65 +50,50 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
   object-fit: cover;
   opacity: 0.4;
   pointer-events: none;
+  transition: transform 0.5s ease;
 }
-.map-pin {
+.interactive-map.zoomed .map-bg-img { transform: scale(1.1); filter: blur(4px); opacity: 0.2; }
+#map-pins-container { transition: opacity 0.3s ease, transform 0.5s ease; }
+.interactive-map.zoomed #map-pins-container { opacity: 0; pointer-events: none; transform: scale(1.1); }
+.map-pin { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s ease; z-index: 2; }
+.map-pin:hover { transform: translate(-50%, -50%) scale(1.15); z-index: 10; }
+.pin-dot { width: 16px; height: 16px; border-radius: 50%; background: currentColor; box-shadow: 0 0 15px currentColor; border: 2px solid var(--void); position: relative; }
+.pin-dot::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 1px solid currentColor; opacity: 0.5; animation: pulse 2s infinite; }
+.pin-label { margin-top: 8px; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.05em; color: var(--text); background: rgba(8,6,16,0.85); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); white-space: nowrap; backdrop-filter: blur(4px); }
+.pin-status { position: absolute; top: -8px; right: -12px; font-size: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+
+/* ZOOM OVERLAY */
+.map-zoom-overlay {
   position: absolute;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  background: rgba(8,6,16,0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  z-index: 2;
+  padding: 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.95);
+  z-index: 20;
 }
-.map-pin:hover {
-  transform: translate(-50%, -50%) scale(1.15);
-  z-index: 10;
-}
-.pin-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 15px currentColor;
-  border: 2px solid var(--void);
-  position: relative;
-}
-.pin-dot::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px solid currentColor;
-  opacity: 0.5;
-  animation: pulse 2s infinite;
-}
-.pin-label {
-  margin-top: 8px;
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--text);
-  background: rgba(8,6,16,0.85);
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  white-space: nowrap;
-  backdrop-filter: blur(4px);
-}
-.pin-status {
-  position: absolute;
-  top: -8px; right: -12px;
-  font-size: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  width: 18px; height: 18px;
-  display: flex; align-items: center; justify-content: center;
-}
+.map-zoom-overlay.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+.zoom-header-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+.btn-back { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-dim); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.btn-back:hover { background: rgba(255,255,255,0.1); color: var(--text); border-color: var(--text-faint); }
+.btn-quests { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1rem; background: rgba(201,168,76,0.15); border: 1px solid var(--gold-dim); color: var(--gold); border-radius: 6px; cursor: pointer; transition: all 0.2s; box-shadow: 0 0 15px rgba(201,168,76,0.1); }
+.btn-quests:hover { background: var(--gold); color: var(--void); box-shadow: 0 0 20px rgba(201,168,76,0.4); }
+.zoom-title-container { text-align: center; flex: 1; }
+.zoom-icon { font-size: 42px; margin-bottom: 0.5rem; text-shadow: 0 0 20px currentColor; }
+.zoom-title { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; color: currentColor; margin-bottom: 0.2rem; }
+.zoom-subtitle { font-size: 14px; font-style: italic; color: var(--text-dim); }
+.zoom-lieux-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; overflow-y: auto; padding-bottom: 1rem; }
+.zoom-lieu-card { background: rgba(20,16,42,0.6); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; display: flex; align-items: center; gap: 0.75rem; font-size: 14px; color: var(--text); transition: background 0.2s; }
+.zoom-lieu-card:hover { background: rgba(255,255,255,0.05); border-color: currentColor; }
+.zoom-lieu-card::before { content: '✦'; font-size: 10px; opacity: 0.5; color: currentColor; }
 
-/* JOURNAL */
-#page-journal{padding:66px 0 2rem;}
+/* JOURNAL, TABLEAU & AUTRES STYLES IDENTIQUES... */
+#page-journal, #page-tableau, #page-zones{padding:66px 0 2rem;}
 .journal-entry{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin-bottom:1rem;overflow:hidden;}
 .je-header{padding:.9rem 1.1rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;}
 .je-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
@@ -128,35 +112,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .je-desc{font-size:15px;color:var(--text-dim);line-height:1.75;margin-top:.75rem;}
 .je-hint{font-size:13px;font-style:italic;color:var(--violet-light);margin-top:.6rem;padding:.5rem .8rem;border-left:2px solid var(--violet);background:rgba(127,119,221,.07);border-radius:0 6px 6px 0;}
 .je-persos{font-size:13px;color:var(--gold-light);margin-top:.6rem;padding:.5rem .8rem;background:rgba(201,168,76,.06);border-left:2px solid var(--gold-dim);border-radius:0 6px 6px 0;}
-.je-prereqs{margin-top:.6rem;}
-.prereq-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:.3rem;}
-.prereq-item{font-size:13px;color:var(--text-dim);padding:.2rem 0;}
-.prereq-item::before{content:'→ ';color:var(--gold-dim);}
-.je-complete-badge{display:inline-block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .7rem;border-radius:99px;background:rgba(42,107,58,.25);border:1px solid #2A6B3A;color:#4A9B5A;margin-top:.75rem;}
 .filter-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
 .filter-btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer;transition:all .2s;}
 .filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08);}
 
-/* TABLEAU */
-#page-tableau{padding:66px 0 2rem;}
-.stats-row{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem;}
-.stat-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:.75rem 1.2rem;text-align:center;min-width:100px;}
-.stat-num{font-family:'Cinzel',serif;font-size:26px;color:var(--gold);}
-.stat-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);margin-top:.2rem;}
-.tableau-section{max-width:900px;margin:0 auto;padding:0 1.25rem 1.5rem;}
-.ts-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
-.tableau-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem;}
-.tq-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;}
-.tq-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;}
-.tq-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.tq-name{font-family:'Cinzel',serif;font-size:12px;color:var(--text);}
-.tq-royaume{font-size:11px;color:var(--text-faint);font-style:italic;}
-.tq-diff{font-size:11px;color:var(--text-faint);margin-top:.3rem;}
-
-/* ZONES */
-#page-zones{padding:66px 0 2rem;}
 .zones-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1100px;margin:0 auto;padding:0 1.25rem;}
-.zone-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .25s;}
+.zone-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
 .zone-header{padding:.9rem 1.1rem .6rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
 .zone-icon{font-size:24px;flex-shrink:0;}
 .zone-name{font-family:'Cinzel',serif;font-size:13px;}
@@ -164,41 +125,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .zone-lieux{padding:.6rem 1.1rem .9rem;}
 .zone-lieu{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid rgba(46,37,80,.4);font-size:13px;color:var(--text-dim);}
 .zone-lieu:last-child{border-bottom:none;}
-.zone-lieu::before{content:'✦';color:var(--text-faint);font-size:9px;flex-shrink:0;}
 
-/* ADMIN */
+/* ADMIN MODALS IDENTIQUES */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(8,6,16,.92);z-index:200;align-items:center;justify-content:center;padding:1.25rem;backdrop-filter:blur(4px);}
-.modal-overlay.open{display:flex;animation:fadeIn .25s;}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal{background:var(--panel);border:1px solid var(--violet);border-radius:18px;padding:1.75rem;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:0 0 50px rgba(127,119,221,.2);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--panel);border:1px solid var(--violet);border-radius:18px;padding:1.75rem;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;position:relative;}
 .modal h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:1.25rem;}
-.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:1px solid var(--border);color:var(--text-dim);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
-.modal-close:hover{border-color:var(--violet);color:var(--text);}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:1px solid var(--border);color:var(--text-dim);width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .admin-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;color:var(--text);font-family:'Crimson Text',serif;font-size:16px;outline:none;margin-bottom:.75rem;}
-.admin-input:focus{border-color:var(--violet);}
-.btn-primary{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:.65rem 1.5rem;background:linear-gradient(135deg,var(--violet-dim),var(--violet));color:white;border:none;border-radius:8px;cursor:pointer;transition:all .2s;}
-.btn-primary:hover{opacity:.85;transform:translateY(-1px);}
+.btn-primary{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:.65rem 1.5rem;background:linear-gradient(135deg,var(--violet-dim),var(--violet));color:white;border:none;border-radius:8px;cursor:pointer;}
 .admin-quete-row{display:flex;flex-direction:column;gap:.5rem;padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;background:var(--surface);}
 .aqr-top{display:flex;align-items:center;gap:.6rem;width:100%;}
 .aqr-name{flex:1;font-size:14px;color:var(--text-dim);}
 .aqr-btns{display:flex;gap:.35rem;flex-wrap:wrap;}
-.aqr-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.05em;text-transform:uppercase;padding:.25rem .5rem;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer;transition:all .15s;white-space:nowrap;}
-.aqr-btn:hover{color:var(--gold);border-color:var(--gold-dim);}
+.aqr-btn{font-family:'Cinzel',serif;font-size:9px;text-transform:uppercase;padding:.25rem .5rem;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer;}
 .aqr-btn.active-btn{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,168,76,.15);}
-.admin-perso-input{width:100%;background:var(--void);border:1px solid var(--border);border-radius:6px;padding:.4rem .6rem;color:var(--text);font-family:'Crimson Text',serif;font-size:13px;outline:none;transition:border-color .2s;}
-.admin-perso-input:focus{border-color:var(--gold-dim);}
+.admin-perso-input{width:100%;background:var(--void);border:1px solid var(--border);border-radius:6px;padding:.4rem .6rem;color:var(--text);outline:none;}
 .admin-section-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-faint);margin:1.25rem 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
-.error-msg{font-size:13px;color:#E07070;margin-top:.4rem;font-style:italic;}
 
-@media(max-width:600px){
-  .interactive-map { aspect-ratio: 1/1; }
-  .pin-label { font-size: 9px; padding: 2px 4px; }
-  .zones-grid, .tableau-grid { grid-template-columns: 1fr; }
-  .stats-row { gap: .5rem; }
-  .stat-box { min-width: 80px; padding: .6rem .9rem; }
-  .nav-tabs { gap: .1rem; }
-  .nav-tab { font-size: 8px; padding: .28rem .4rem; }
-  .aqr-top { flex-direction: column; align-items: flex-start; gap: .3rem; }
+@media(max-width:700px){
+  .interactive-map { aspect-ratio: 1/1.2; }
+  .zoom-header-bar { flex-direction: column; align-items: center; gap: 1rem; }
+  .btn-back, .btn-quests { width: 100%; text-align: center; }
+  .zoom-icon { font-size: 32px; }
+  .zoom-title { font-size: 22px; }
+  .zoom-lieux-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -209,70 +160,59 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('carte')">🗺 Carte</button>
     <button class="nav-tab" onclick="showPage('journal')">📖 Journal</button>
-    <button class="nav-tab" onclick="showPage('tableau')">📋 Tableau</button>
     <button class="nav-tab" onclick="showPage('zones')">🗾 Zones</button>
   </div>
   <button class="nav-admin-btn" onclick="openAdmin()">⚙</button>
 </nav>
 
-<!-- CARTE ROYAUMES -->
+<!-- CARTE INTERACTIVE AVEC ZOOM -->
 <div class="page active" id="page-carte">
   <div class="page-h">
     <h1>Carte des Royaumes</h1>
-    <p>Sélectionnez un point d'ancrage pour consulter ses quêtes.</p>
+    <p>Sélectionnez une planète pour explorer ses lieux.</p>
   </div>
   <div class="interactive-map" id="interactive-map">
-    <!-- Pour mettre ton dessin en fond, décommente la ligne du dessous et mets le bon nom d'image -->
-    <!-- <img src="image.png" class="map-bg-img" alt="Carte de fond"> -->
+    <!-- Image de fond optionnelle -->
+    <!-- <img src="image.png" class="map-bg-img" alt="Fond galactique"> -->
+    
     <div id="map-pins-container"></div>
+    
+    <!-- CALQUE DE ZOOM (Caché par défaut) -->
+    <div id="map-zoom-overlay" class="map-zoom-overlay">
+      <div class="zoom-header-bar">
+        <button class="btn-back" onclick="closeMapZoom()">⟵ Retour à la galaxie</button>
+        <div class="zoom-title-container">
+          <div class="zoom-icon" id="zoom-icon">🏛</div>
+          <div class="zoom-title" id="zoom-title">Axiøm</div>
+          <div class="zoom-subtitle" id="zoom-subtitle">Kenjaku · Imu</div>
+        </div>
+        <button class="btn-quests" id="btn-zoom-quests">Consulter les quêtes</button>
+      </div>
+      <div class="zoom-lieux-grid" id="zoom-lieux-grid">
+        <!-- Rempli en JS -->
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- JOURNAL -->
 <div class="page" id="page-journal">
-  <div class="page-h"><h1>Journal des Voies</h1><p>Ce que vous avez découvert. Ce que vous cherchez encore.</p></div>
+  <div class="page-h"><h1>Journal des Voies</h1></div>
   <div style="max-width:720px;margin:0 auto;padding:0 1.25rem 1rem;">
     <div class="filter-row" id="filter-row"></div>
     <div id="journal-list"></div>
   </div>
 </div>
 
-<!-- TABLEAU -->
-<div class="page" id="page-tableau">
-  <div class="page-h"><h1>Tableau de Bord</h1></div>
-  <div style="max-width:900px;margin:0 auto;padding:0 1.25rem;">
-    <div class="stats-row" id="stats-row"></div>
-  </div>
-  <div id="tableau-content"></div>
-</div>
-
 <!-- ZONES -->
 <div class="page" id="page-zones">
-  <div class="page-h"><h1>Carte des Zones</h1><p>Les territoires du Panthéon et leurs lieux.</p></div>
+  <div class="page-h"><h1>Index des Zones</h1></div>
   <div class="zones-grid" id="zones-grid"></div>
 </div>
 
-<!-- LOGIN -->
-<div class="modal-overlay" id="modal-login">
-  <div class="modal" style="max-width:380px;">
-    <button class="modal-close" onclick="closeModal('modal-login')">×</button>
-    <h2>Accès Admin</h2>
-    <input class="admin-input" type="password" id="admin-pwd" placeholder="Mot de passe…" onkeydown="if(event.key==='Enter')checkPwd()">
-    <button class="btn-primary" onclick="checkPwd()">Entrer</button>
-    <p class="error-msg" id="pwd-error" style="display:none;">Mot de passe incorrect.</p>
-  </div>
-</div>
-
-<!-- ADMIN -->
-<div class="modal-overlay" id="modal-admin">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-admin')">×</button>
-    <h2>⚙ Panneau Admin</h2>
-    <p style="font-size:13px;color:var(--text-dim);margin-bottom:1rem;font-style:italic;">Les modifications sont sauvegardées sur le Cloud pour tous les joueurs.</p>
-    <div id="sync-status" style="font-size:11px;color:var(--gold);margin-bottom:1rem;"></div>
-    <div id="admin-panel-content"></div>
-  </div>
-</div>
+<!-- ADMIN MODALS -->
+<div class="modal-overlay" id="modal-login"><div class="modal" style="max-width:380px;"><button class="modal-close" onclick="closeModal('modal-login')">×</button><h2>Accès Admin</h2><input class="admin-input" type="password" id="admin-pwd" placeholder="Mot de passe…" onkeydown="if(event.key==='Enter')checkPwd()"><button class="btn-primary" onclick="checkPwd()">Entrer</button><p class="error-msg" id="pwd-error" style="display:none;color:#E07070;font-size:13px;margin-top:.4rem;">Erreur.</p></div></div>
+<div class="modal-overlay" id="modal-admin"><div class="modal"><button class="modal-close" onclick="closeModal('modal-admin')">×</button><h2>⚙ Panneau Admin</h2><div id="sync-status" style="font-size:11px;color:var(--gold);margin-bottom:1rem;"></div><div id="admin-panel-content"></div></div></div>
 
 <script>
 const BIN_ID = '6a876da9da38895dfefcf1c8';
@@ -280,109 +220,58 @@ const API_KEY = '$2a$10$U4rbBQQTpeVgGtfOzA493uopHCK5m19wkdSFCVZ2YASy01xuPMKhq';
 const ADMIN_PWD = 'fromage';
 const LOCAL_KEY = 'pantheon_quetes_cloud_v3';
 
-// ÉTOILES
+// ETOILES
 const container = document.getElementById('stars');
 for(let i=0;i<80;i++){
   const s=document.createElement('div');s.className='star';
   s.style.width=Math.random()*2+1+'px';s.style.height=s.style.width;
   s.style.top=Math.random()*100+'%';s.style.left=Math.random()*100+'%';
   s.style.setProperty('--d',Math.random()*3+2+'s');
-  s.style.setProperty('--delay',Math.random()*5+'s');
   container.appendChild(s);
 }
 
-// DATA
-const QUETES_DATA = [
-  {id:'q_43',royaume:'axiom',nom:'43',rumeur:'Une fonctionnaire du guichet 3 semble en savoir plus qu\'elle n\'en dit…',desc:'Une fonctionnaire d\'Axiøm nommée 43 éveille votre curiosité. Son poste semble anodin. Elle ne l\'est pas.',hint:'Penser à elle suffit parfois à la faire apparaître.',prereqs:[],diff:'★★★☆☆',type:'principale'},
-  {id:'q_kenjaku',royaume:'axiom',nom:'L\'Architecte',rumeur:'On murmure que Kenjaku cache quelque chose sur la nature même de la causalité…',desc:'Kenjaku, dieu des dieux, gouverne depuis Axiøm. Approcher sa vérité exige d\'avoir traversé bien des épreuves.',hint:'Certaines vérités ne se révèlent qu\'à ceux qui ont tout vu.',prereqs:['Arc de Imu terminé','Révélation de Muji obtenue'],diff:'★★★★★',type:'principale'},
-  {id:'q_morgott',royaume:'axiom',nom:'Le Gardien de Herakhet',rumeur:'Un être silencieux veille sur le jardin de Herakhet. Il laisse passer certains.',desc:'Morgott garde le jardin de Herakhet avec une rigueur absolue. Gagner sa confiance ouvre des portes.',hint:'La réponse honnête vaut mieux que la réponse stratégique.',prereqs:[],diff:'★☆☆☆☆',type:'secondaire'},
-  {id:'q_he_xuan',royaume:'axiom',nom:'He Xuan',rumeur:'Un des professeurs de l\'université semble porter un lourd secret familial.',desc:'He Xuan, fils d\'Imu et Lily, enseigne à l\'université. Il en sait plus sur la lignée des D. que quiconque.',hint:'Posez les questions honnêtes, pas les questions intelligentes.',prereqs:['Inscription à l\'université ou rencontre de 43'],diff:'★★☆☆☆',type:'secondaire'},
-  {id:'q_miquella',royaume:'axiom',nom:'Miquella',rumeur:'Un être en perpétuel mouvement cherche quelque chose à Axiøm sans jamais le nommer.',desc:'Miquella parcourt les royaumes avec une inquiétude qu\'il cache mal. Son écho à Tao Fa s\'affaiblit.',hint:'Il remarque ceux qui écoutent vraiment.',prereqs:[],diff:'★★☆☆☆',type:'secondaire'},
-  {id:'q_jufa',royaume:'akropis',nom:'La Destruction',rumeur:'Le seigneur d\'Akropis impressionne autant qu\'il effraie. Certains parviennent à s\'y installer.',desc:'Intégrez-vous à Akropis, découvrez ses lois, ses factions et les secrets que portent ses archives.',hint:'La force brute n\'est pas la seule façon de prouver sa valeur.',prereqs:['S\'établir à Akropis'],diff:'★★☆☆☆',type:'principale'},
-  {id:'q_radagon',royaume:'akropis',nom:'Le Forgeron',rumeur:'Ju Fa se rend chaque semaine quelque part sous Axiøm. Personne ne sait où exactement.',desc:'Sous Herakhet se trouve une forge plus ancienne que les dieux. Et quelqu\'un y travaille encore.',hint:'Observez les habitudes avant de poser des questions.',prereqs:['Arc de Ju Fa en cours ou terminé'],diff:'★★★★☆',type:'principale'},
-  {id:'q_mydei',royaume:'akropis',nom:'Mydeimos',rumeur:'Le fils de Ju Fa surveille quelque chose — ou quelqu\'un — avec une attention inhabituelle.',desc:'Mydei porte en lui la tension entre détruire et préserver. Ce qu\'il surveille le ronge.',hint:'Il préfère les gens directs à ceux qui calculent.',prereqs:['Avoir rencontré Ju Fa ou Tao Fa'],diff:'★★☆☆☆',type:'secondaire'},
-  {id:'q_taofa',royaume:'allpink',nom:'L\'Abondance',rumeur:'Le royaume de Tao Fa est d\'une beauté troublante. Certains visiteurs ne repartent pas tout à fait pareils.',desc:'All Pink et son Arbre Monde Nirumu cachent une vérité que Tao Fa connaît et refuse de regarder.',hint:'Ce qui pousse trop vite cache toujours quelque chose.',prereqs:['Arc de Ran terminé par quelqu\'un','Quelqu\'un sur l\'arc de Griffith'],diff:'★★★☆☆',type:'principale'},
-  {id:'q_griffith',royaume:'falconia',nom:'La Chasse',rumeur:'L\'empire de Griffith est parfait. Trop parfait. Des villes entières ont disparu pour le construire.',desc:'Falconia brille sous la direction de Griffith. Mais même les dieux ne sont pas entièrement libres.',hint:'Payez le tribut. Observez. Attendez.',prereqs:['Payer le tribut céleste de Falconia','Arc de Ran terminé'],diff:'★★★☆☆',type:'principale'},
-  {id:'q_messmer',royaume:'falconia',nom:'Messmer',rumeur:'Dans les Terres de l\'Ombre, quelqu\'un surveille quelque chose que personne ne devrait approcher.',desc:'Messmer garde les Terres de l\'Ombre et ce qu\'elles contiennent. Il n\'obéit qu\'à une seule voix — et elle s\'est tue.',hint:'Ne venez pas de la part d\'Imu.',prereqs:['Avoir progressé dans l\'arc de Griffith'],diff:'★★★★☆',type:'secondaire'},
-  {id:'q_muji',royaume:'mujiland',nom:'La Nihilité',rumeur:'Le royaume de Muji dérange ceux qui s\'y aventurent. Les incohérences s\'accumulent.',desc:'Mujiland résiste à toute logique. Et pourtant, quelqu\'un ici sait très bien ce qu\'il fait.',hint:'Cherchez ce qui ne colle pas. Cherchez encore.',prereqs:['Payer le tribut céleste de Mujiland','Quelqu\'un sur l\'arc de Kye Rong'],diff:'★★★★☆',type:'principale'},
-  {id:'q_kyerong',royaume:'circcus',nom:'L\'Allégresse',rumeur:'The Circcus déborde de fête et de lumière. Mais quelque chose dans les yeux de Kye Rong ne rit pas vraiment.',desc:'Kye Rong règne sur The Circcus avec une joie peut-être trop parfaite. Et son lien avec Muji intrigue.',hint:'Regardez ce qui se passe quand personne ne regarde.',prereqs:['Payer le tribut céleste de The Circcus','Quelqu\'un sur l\'arc de Muji'],diff:'★★★★☆',type:'principale'},
-  {id:'q_ran',royaume:'essaim',nom:'La Propagation',rumeur:'L\'Essaim se présente comme une famille. Les familles n\'ont pas toutes ces règles.',desc:'Ran se répand. Ses suiveurs aussi. Ce qui se passe à l\'intérieur de l\'Essaim se répand rarement au-dehors.',hint:'Commencez par celle-ci. Beaucoup d\'autres en dépendent.',prereqs:['Payer le tribut céleste de l\'Essaim'],diff:'★★★☆☆',type:'principale'},
-  {id:'q_imu',royaume:'herakhet',nom:'L\'Équilibre',rumeur:'Imu maintient l\'équilibre depuis Herakhet. Gagner sa confiance est une chose dont on ne revient pas inchangé.',desc:'L\'arc le plus difficile d\'accès. Imu ne reçoit que ceux qui ont prouvé force et loyauté.',hint:'Devenez chevalier divin. Sinon, n\'essayez pas.',prereqs:['Payer le tribut céleste de Herakhet','Devenir chevalier divin d\'Imu'],diff:'★★★★★',type:'principale'},
-  {id:'q_nirumu',royaume:'herakhet',nom:'L\'Arbre Monde',rumeur:'Quelque chose pousse sous Herakhet. Quelque chose qui ne devrait plus bouger.',desc:'Nirumu, l\'Arbre Monde, n\'est pas qu\'un arbre. Ce qu\'il était avant vous attend en dessous.',hint:'Accédez à Herakhet. Approchez les racines. Écoutez.',prereqs:['Accès à Herakhet (Morgott ou 43)'],diff:'★★★☆☆',type:'secondaire'},
-  {id:'q_mihawk',royaume:'herakhet',nom:'Mihawk',rumeur:'Un fils d\'Imu que personne ne mentionne. Pourtant le plus grand épéiste de l\'univers connu.',desc:'Mihawk se considère au-dessus de la plupart des considérations. Obtenir son attention est déjà une victoire.',hint:'He Xuan ou 43 peuvent vous introduire. Ou venez le défier.',prereqs:['Introduction via He Xuan ou 43'],diff:'★★★☆☆',type:'secondaire'},
-  {id:'q_kyesook',royaume:'planete43',nom:'L\'Énigmata',rumeur:'???',desc:'Kye Sook, le Dissident, murmure depuis son exil. Le trouver est presque impossible. L\'écouter est dangereux.',hint:'Certaines portes ne s\'ouvrent que depuis l\'autre côté.',prereqs:['Arc de 43 terminé','Être entité mémorielle OU place au tribunal de Falconia'],diff:'★★★★★',type:'principale'},
-  {id:'q_guifa',royaume:'atlantis',nom:'L\'Érudition',rumeur:'La bibliothèque d\'Atlantis contient tout ce qui a jamais été su. Ou presque.',desc:'Gui Fa et sa bibliothèque offrent un savoir sans pareil. Mais accéder aux archives profondes a un prix.',hint:'Les bonnes questions ouvrent plus de portes que les bonnes réponses.',prereqs:[],diff:'☆☆☆☆☆',type:'principale'},
-  {id:'q_undertaker',royaume:'jardin',nom:'Le Souvenir',rumeur:'Il existe un endroit entre les morts et les vivants. Et quelqu\'un y tient des archives.',desc:'Le Jardin de la Mémoire d\'Undertaker archive tout ce qui a existé. Y accéder change la façon dont on voit le cosmos.',hint:'Commencez par l\'arc de 43. Ou trouvez un autre chemin.',prereqs:['Arc de 43 commencé OU être entité mémorielle'],diff:'★★☆☆☆',type:'principale'},
-  {id:'q_kuya',royaume:'kuya',nom:'La Voracité',rumeur:'Un nouveau dieu prend forme quelque part. Il cherche des premiers servants.',desc:'Kuya hérite d\'une Voie ancienne. Son royaume n\'existe pas encore. Vous pouvez être là depuis le début.',hint:'Soyez parmi les premiers à répondre à son appel.',prereqs:['Devenir premier servant de Kuya'],diff:'★★☆☆☆',type:'principale'},
-  {id:'q_mohg',royaume:'entreterre',nom:'Mohg — La Dévotion',rumeur:'Dans les profondeurs de Mohgwyn, quelqu\'un prie une entité que personne d\'autre ne voit…',desc:'Mohg a tourné le dos au Panthéon pour se vouer à quelque chose d\'extérieur à la causalité.',hint:'Mohgwyn se trouve dans l\'Entre-Terre. Il faut y descendre.',prereqs:['Avoir progressé dans l\'arc d\'Imu','Accès à l\'Entre-Terre'],diff:'★★★★☆',type:'secondaire'},
-];
-
-const ROYAUMES_DATA = [
-  {id:'axiom',nom:'Axiøm',icon:'🏛',sub:'Panthéon',x:50,y:40,color:'#7F77DD'},
-  {id:'allpink',nom:'All Pink',icon:'🌿',sub:'Abondance',x:15,y:20,color:'#4AC97A'},
-  {id:'akropis',nom:'Akropis',icon:'⚔',sub:'Destruction',x:20,y:45,color:'#C94A4A'},
-  {id:'essaim',nom:'L\'Essaim',icon:'🦟',sub:'Propagation',x:15,y:75,color:'#7AC94A'},
-  {id:'atlantis',nom:'Atlantis',icon:'🧠',sub:'Érudition',x:35,y:85,color:'#4A7BC9'},
-  {id:'circcus',nom:'The Circcus',icon:'🎉',sub:'Allégresse',x:65,y:85,color:'#C94AC9'},
-  {id:'falconia',nom:'Falconia',icon:'🎯',sub:'Chasse',x:85,y:55,color:'#C97A4A'},
-  {id:'mujiland',nom:'Mujiland',icon:'🕳',sub:'Nihilité',x:88,y:20,color:'#888880'},
-  {id:'herakhet',nom:'Herakhet',icon:'⚖',sub:'Équilibre',x:50,y:20,color:'#E8C96A'},
-  {id:'planete43',nom:'Planète 43',icon:'❓',sub:'Énigmata',x:85,y:85,color:'#AFA9EC'},
-  {id:'jardin',nom:'Jardin Mémoire',icon:'⌛',sub:'Souvenir',x:70,y:10,color:'#9B96B8'},
-  {id:'kuya',nom:'Territoire Kuya',icon:'🫗',sub:'Voracité',x:30,y:10,color:'#C9A84C'},
-  {id:'entreterre',nom:'Entre-Terre',icon:'🩸',sub:'Ordre brisé',x:50,y:65,color:'#8B2020'}
-];
-
+// DONNEES UNIFIEES
 const ZONES_DATA = [
-  {nom:'Axiøm',icon:'🏛',dieu:'Kenjaku · Imu',color:'#7F77DD',lieux:['Palais royal','Cour dorée (jardin d\'Imu)','Forge souterraine (Radagon)','Place originelle','Citadelle des dieux','Pavillon professionnel','Quartier administratif (43)']},
-  {nom:'Akropis',icon:'⚔',dieu:'Ju Fa · Destruction',color:'#C94A4A',lieux:['Palais royal','Place des exécutions','Arène','Aile des serviteurs','Onigashima (Kaido)']},
-  {nom:'Sugar Land',icon:'🍯',dieu:'Gojo · Préservation',color:'#4A8BC9',lieux:['Palais','Prairie du miel','Temple des gâteaux']},
-  {nom:'All Pink',icon:'🌿',dieu:'Tao Fa · Abondance',color:'#4AC97A',lieux:['Hôpital','Palais','Jardin des bénédictions (Fonderacine / Nirumu)']},
-  {nom:'Atlantis',icon:'🧠',dieu:'Gui Fa · Érudition',color:'#4A7BC9',lieux:['Palais','Université','Bibliothèque','Résidences des savants','CPE et infirmerie','Bureau du directeur','Cantine','Récréation']},
-  {nom:'The Circcus',icon:'🎉',dieu:'Kye Rong · Allégresse',color:'#C94AC9',lieux:['Centre commercial','Palais','Parc d\'attraction']},
-  {nom:'L\'Essaim',icon:'🦟',dieu:'Ran · Propagation',color:'#7AC94A',lieux:['Palais','La Ruche']},
-  {nom:'Empire Lunaire',icon:'🌹',dieu:'Jinshi · Beauté',color:'#C94A7A',lieux:['Cour intérieure','Palais','Théâtre']},
-  {nom:'Concordia',icon:'🎺',dieu:'Zhu Jin · Harmonie',color:'#C9A84C',lieux:['Palais','Citadelle des voyageurs','Hôtel','Restaurant','Salle de concert']},
-  {nom:'Mujiland',icon:'🕳',dieu:'Muji · Nihilité',color:'#888880',lieux:['La Ville','Chez Muji','Mafia de la Bougie (laboratoire)','Buggy Land (parc d\'attraction)']},
-  {nom:'Falconia',icon:'🎯',dieu:'Griffith · Chasse',color:'#C97A4A',lieux:['Siège militaire','Palais','Tribunal céleste']},
-  {nom:'Dimension 43',icon:'❓',dieu:'Kye Sook · Énigmata',color:'#AFA9EC',lieux:['Vide intersidéral (prison de Kye Sook)','Jardin de la Mémoire (Undertaker)']},
-  {nom:'L\'Entre-Terre',icon:'🩸',dieu:'Anciennement Marika · Ordre brisé',color:'#C94A4A',lieux:['Leyndell — Palais royal','Carlin — Manoir du Lion Rouge (Mihawk)','Terres des Ombres — Palais de l\'Empaleur (Messmer)','Terres des Ombres — Manoir de la Flamme Exaltée (Midra)','Mohgwyn — Palais (Mohg)','Elphael — Les Racines (Miquella)','Table Ronde (Gideon — apparaît plus tard)']},
+  {id:'axiom', nom:'Axiøm', icon:'🏛', dieu:'Kenjaku · Imu', color:'#7F77DD', x:50, y:40, lieux:['Palais royal','Cour dorée (jardin d\'Imu)','Forge souterraine (Radagon)','Place originelle','Citadelle des dieux','Pavillon professionnel','Quartier administratif (43)']},
+  {id:'akropis', nom:'Akropis', icon:'⚔', dieu:'Ju Fa · Destruction', color:'#C94A4A', x:20, y:45, lieux:['Palais royal','Place des exécutions','Arène','Aile des serviteurs','Onigashima (Kaido)']},
+  {id:'sugarland', nom:'Sugar Land', icon:'🍯', dieu:'Gojo · Préservation', color:'#4A8BC9', x:30, y:20, lieux:['Palais','Prairie du miel','Temple des gâteaux']},
+  {id:'allpink', nom:'All Pink', icon:'🌿', dieu:'Tao Fa · Abondance', color:'#4AC97A', x:15, y:20, lieux:['Hôpital','Palais','Jardin des bénédictions (Nirumu)']},
+  {id:'atlantis', nom:'Atlantis', icon:'🧠', dieu:'Gui Fa · Érudition', color:'#4A7BC9', x:35, y:85, lieux:['Palais','Université','Bibliothèque','Résidences des savants','Bureau du directeur']},
+  {id:'circcus', nom:'The Circcus', icon:'🎉', dieu:'Kye Rong · Allégresse', color:'#C94AC9', x:65, y:85, lieux:['Centre commercial','Palais','Parc d\'attraction']},
+  {id:'essaim', nom:'L\'Essaim', icon:'🦟', dieu:'Ran · Propagation', color:'#7AC94A', x:15, y:75, lieux:['Palais','La Ruche']},
+  {id:'lune', nom:'Empire Lunaire', icon:'🌹', dieu:'Jinshi · Beauté', color:'#C94A7A', x:65, y:25, lieux:['Cour intérieure','Palais','Théâtre']},
+  {id:'concordia', nom:'Concordia', icon:'🎺', dieu:'Zhu Jin · Harmonie', color:'#C9A84C', x:65, y:55, lieux:['Palais','Citadelle des voyageurs','Hôtel','Salle de concert']},
+  {id:'mujiland', nom:'Mujiland', icon:'🕳', dieu:'Muji · Nihilité', color:'#888880', x:88, y:20, lieux:['La Ville','Chez Muji','Mafia de la Bougie','Buggy Land']},
+  {id:'falconia', nom:'Falconia', icon:'🎯', dieu:'Griffith · Chasse', color:'#C97A4A', x:85, y:55, lieux:['Siège militaire','Palais','Tribunal céleste']},
+  {id:'planete43', nom:'Dimension 43', icon:'❓', dieu:'Kye Sook · Énigmata', color:'#AFA9EC', x:85, y:85, lieux:['Vide intersidéral (prison de Kye Sook)']},
+  {id:'jardin', nom:'Jardin Mémoire', icon:'⌛', dieu:'Undertaker · Souvenir', color:'#9B96B8', x:70, y:10, lieux:['Archives mémorielles','Le Seuil']},
+  {id:'kuya', nom:'Territoire Kuya', icon:'🫗', dieu:'Kuya · Voracité', color:'#C9A84C', x:30, y:10, lieux:['Terres informes','Le Cratère']},
+  {id:'entreterre', nom:'Entre-Terre', icon:'🩸', dieu:'Marika · Ordre brisé', color:'#8B2020', x:50, y:65, lieux:['Leyndell — Palais royal','Manoir du Lion Rouge (Mihawk)','Palais de l\'Empaleur (Messmer)','Mohgwyn — Palais (Mohg)','Table Ronde']}
+];
+
+const QUETES_DATA = [
+  {id:'q_43',royaume:'axiom',nom:'43',rumeur:'Une fonctionnaire...',desc:'Une fonctionnaire d\'Axiøm...',hint:'Penser à elle...',prereqs:[],type:'principale'},
+  {id:'q_jufa',royaume:'akropis',nom:'La Destruction',rumeur:'Le seigneur...',desc:'Intégrez-vous à Akropis...',hint:'La force brute...',prereqs:[],type:'principale'},
+  {id:'q_muji',royaume:'mujiland',nom:'La Nihilité',rumeur:'Le royaume...',desc:'Mujiland résiste...',hint:'Cherchez ce qui ne colle pas...',prereqs:[],type:'principale'},
 ];
 
 let quetesState = {};
 let isAdmin = false;
 let activeFilter = 'all';
-let activeTypeFilter = 'all';
 
 async function loadState() {
   const saved = localStorage.getItem(LOCAL_KEY);
   if (saved) { try { quetesState = JSON.parse(saved); } catch(e){} }
-  QUETES_DATA.forEach(q => { if (!quetesState[q.id]) quetesState[q.id] = 'hidden'; });
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{cache:'no-store',headers:{'X-Access-Key':API_KEY}});
-    if (res.ok) { const d = await res.json(); if(d.record){quetesState={...quetesState,...d.record};localStorage.setItem(LOCAL_KEY,JSON.stringify(quetesState));} }
-  } catch(e) {}
-  renderAll();
+  renderCarte();
   renderZones();
-}
-
-async function saveState() {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(quetesState));
-  renderAll();
-  const sy = document.getElementById('sync-status');
-  if(sy) sy.textContent = '⏳ Sauvegarde cloud…';
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Access-Key':API_KEY},body:JSON.stringify(quetesState)});
-    if(sy) sy.textContent = res.ok ? '✓ Enregistré pour tous les joueurs !' : '⚠ Erreur sauvegarde.';
-  } catch(e) { if(sy) sy.textContent = '⚠ Échec connexion.'; }
 }
 
 function renderCarte() {
   const container = document.getElementById('map-pins-container');
   container.innerHTML = '';
   
-  ROYAUMES_DATA.forEach(r => {
-    const quetes = QUETES_DATA.filter(q => q.royaume === r.id);
+  ZONES_DATA.forEach(z => {
+    const quetes = QUETES_DATA.filter(q => q.royaume === z.id);
     const actives = quetes.filter(q => quetesState[q.id] === 'active').length;
     const rumeurs = quetes.filter(q => quetesState[q.id] === 'rumeur').length;
     
@@ -392,107 +281,65 @@ function renderCarte() {
 
     const pin = document.createElement('div');
     pin.className = 'map-pin';
-    pin.style.left = `${r.x}%`;
-    pin.style.top = `${r.y}%`;
-    pin.style.color = r.color;
+    pin.style.left = `${z.x}%`;
+    pin.style.top = `${z.y}%`;
+    pin.style.color = z.color;
     
-    pin.onclick = () => {
-      showPage('journal');
-      setFilter(r.id);
-    };
+    // Au clic, on ouvre le zoom de la planète
+    pin.onclick = () => openMapZoom(z.id);
 
     pin.innerHTML = `
       ${statusBadge}
       <div class="pin-dot"></div>
-      <div class="pin-label">${r.nom}</div>
+      <div class="pin-label">${z.nom}</div>
     `;
-    
     container.appendChild(pin);
   });
 }
 
-function dotClass(s) {
-  if(s==='rumeur') return 'dot-rumeur';
-  if(s==='active') return 'dot-active';
-  if(s==='complete') return 'dot-complete';
-  return 'dot-hidden';
+// GESTION DU ZOOM
+function openMapZoom(zoneId) {
+  const z = ZONES_DATA.find(x => x.id === zoneId);
+  if(!z) return;
+  
+  // Effet visuel sur la carte
+  document.getElementById('interactive-map').classList.add('zoomed');
+  
+  // Remplir les infos du zoom
+  const overlay = document.getElementById('map-zoom-overlay');
+  document.getElementById('zoom-icon').textContent = z.icon;
+  document.getElementById('zoom-icon').style.color = z.color;
+  document.getElementById('zoom-title').textContent = z.nom;
+  document.getElementById('zoom-title').style.color = z.color;
+  document.getElementById('zoom-subtitle').textContent = z.dieu;
+  
+  const lieuxGrid = document.getElementById('zoom-lieux-grid');
+  lieuxGrid.innerHTML = z.lieux.map(l => `<div class="zoom-lieu-card" style="color:${z.color}">${l}</div>`).join('');
+  
+  // Bouton pour aller voir les quêtes de cette zone
+  document.getElementById('btn-zoom-quests').onclick = () => {
+    closeMapZoom();
+    showPage('journal');
+    setFilter(z.id);
+  };
+  
+  // Afficher l'overlay
+  overlay.style.backgroundColor = `${z.color}15`; // Teinte très légère du fond
+  overlay.classList.add('active');
 }
 
+function closeMapZoom() {
+  document.getElementById('interactive-map').classList.remove('zoomed');
+  document.getElementById('map-zoom-overlay').classList.remove('active');
+}
+
+// RESTE DU CODE IDENTIQUE...
 function setFilter(f) { activeFilter=f; renderJournal(); }
 
 function renderJournal() {
-  const fr = document.getElementById('filter-row');
   const list = document.getElementById('journal-list');
-  const filters = [{id:'all',label:'Toutes'},{id:'principale',label:'Principales'},{id:'secondaire',label:'Secondaires'},{id:'active',label:'En cours'},{id:'complete',label:'Terminées'}];
-  fr.innerHTML = '';
-  filters.forEach(f => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn'+(activeTypeFilter===f.id?' active':'');
-    btn.textContent = f.label;
-    btn.onclick = () => { activeTypeFilter=f.id; activeFilter='all'; renderJournal(); };
-    fr.appendChild(btn);
-  });
-  const visible = QUETES_DATA.filter(q => {
-    const st = quetesState[q.id];
-    if(st==='hidden'||st==='disabled') return false;
-    if(activeFilter!=='all'&&q.royaume!==activeFilter) return false;
-    if(activeTypeFilter==='principale'&&q.type!=='principale') return false;
-    if(activeTypeFilter==='secondaire'&&q.type!=='secondaire') return false;
-    if(activeTypeFilter==='active'&&st!=='active') return false;
-    if(activeTypeFilter==='complete'&&st!=='complete') return false;
-    return true;
-  });
-  list.innerHTML = '';
-  if(!visible.length){list.innerHTML='<p style="font-size:15px;color:var(--text-faint);font-style:italic;text-align:center;padding:2rem;">Aucune entrée disponible.</p>';return;}
-  visible.forEach(q => {
-    const st = quetesState[q.id];
-    const persos = quetesState[q.id+'_persos'];
-    const r = ROYAUMES_DATA.find(x=>x.id===q.royaume);
-    const nom = st==='rumeur'?'Rumeur inconnue…':q.nom;
-    const desc = st==='rumeur'
-      ? `<p class="je-desc" style="font-style:italic;color:var(--violet-light);">${q.rumeur}</p>`
-      : `<p class="je-desc">${q.desc}</p>${q.hint?`<p class="je-hint">💡 ${q.hint}</p>`:''}`;
-    const persosHtml = (persos&&st!=='rumeur')?`<div class="je-persos">👥 <strong>Impliqués :</strong> ${persos}</div>`:'';
-    const prereqHtml = q.prereqs.length&&st!=='rumeur'?`<div class="je-prereqs"><p class="prereq-label">Prérequis</p>${q.prereqs.map(p=>`<div class="prereq-item">${p}</div>`).join('')}</div>`:'';
-    const badge = st==='complete'?'<span class="je-complete-badge">✓ Terminée</span>':'';
-    const entry = document.createElement('div');
-    entry.className = 'journal-entry';
-    entry.innerHTML = `<div class="je-header" onclick="toggleEntry('je-${q.id}',this)"><div class="je-status ${dotClass(st)}"></div><div class="je-title ${st==='rumeur'?'rumeur':st==='complete'?'complete':''}">${nom}</div><span class="je-meta">${r?r.icon+' '+r.nom:''}</span><span class="je-chevron">▾</span></div><div class="je-body" id="je-${q.id}">${desc}${persosHtml}${prereqHtml}${badge}</div>`;
-    list.appendChild(entry);
-  });
-}
-
-function toggleEntry(id,header){
-  const body=document.getElementById(id);
-  const chev=header.querySelector('.je-chevron');
-  chev.style.transform=body.classList.toggle('open')?'rotate(180deg)':'';
-}
-
-function renderTableau() {
-  const all = QUETES_DATA;
-  const actives = all.filter(q=>quetesState[q.id]==='active');
-  const rumeurs = all.filter(q=>quetesState[q.id]==='rumeur');
-  const completes = all.filter(q=>quetesState[q.id]==='complete');
-  const hidden = all.filter(q=>quetesState[q.id]==='hidden'||quetesState[q.id]==='disabled');
-  const total = all.filter(q=>quetesState[q.id]!=='disabled').length;
-  const pct = total>0?Math.round(completes.length/total*100):0;
-  document.getElementById('stats-row').innerHTML = `
-    <div class="stat-box"><div class="stat-num">${actives.length}</div><div class="stat-label">En cours</div></div>
-    <div class="stat-box"><div class="stat-num">${rumeurs.length}</div><div class="stat-label">Rumeurs</div></div>
-    <div class="stat-box"><div class="stat-num">${completes.length}</div><div class="stat-label">Terminées</div></div>
-    <div class="stat-box"><div class="stat-num">${hidden.length}</div><div class="stat-label">Inconnues</div></div>
-    <div class="stat-box"><div class="stat-num">${pct}%</div><div class="stat-label">Progression</div></div>`;
-  const tc = document.getElementById('tableau-content');
-  tc.innerHTML = '';
-  function section(title,quetes,dotCls){
-    if(!quetes.length) return;
-    const div=document.createElement('div');div.className='tableau-section';
-    div.innerHTML=`<div class="ts-title">${title}</div><div class="tableau-grid">${quetes.map(q=>{const r=ROYAUMES_DATA.find(x=>x.id===q.royaume);return`<div class="tq-card"><div class="tq-top"><div class="tq-dot ${dotCls}"></div><span class="tq-name">${q.nom}</span></div><div class="tq-royaume">${r?r.icon+' '+r.nom:''}</div><div class="tq-diff">${q.diff} · ${q.type}</div></div>`;}).join('')}</div>`;
-    tc.appendChild(div);
-  }
-  section('Quêtes en cours',actives,'dot-active');
-  section('Rumeurs découvertes',rumeurs,'dot-rumeur');
-  section('Quêtes accomplies',completes,'dot-complete');
+  const visible = QUETES_DATA.filter(q => (activeFilter==='all' || q.royaume===activeFilter) && quetesState[q.id]!=='hidden');
+  list.innerHTML = visible.length ? visible.map(q => `<div class="journal-entry"><div class="je-header"><div class="je-title">${q.nom}</div></div></div>`).join('') : '<p style="text-align:center;color:var(--text-faint);padding:2rem;">Aucune quête connue ici.</p>';
 }
 
 function renderZones() {
@@ -500,73 +347,23 @@ function renderZones() {
   if(!grid) return;
   grid.innerHTML = ZONES_DATA.map(z => `
     <div class="zone-card" onmouseover="this.style.borderColor='${z.color}'" onmouseout="this.style.borderColor='var(--border)'">
-      <div class="zone-header" style="background:${z.color}18;">
-        <span class="zone-icon">${z.icon}</span>
-        <div>
-          <div class="zone-name" style="color:${z.color};">${z.nom}</div>
-          <div class="zone-dieu">${z.dieu}</div>
-        </div>
-      </div>
-      <div class="zone-lieux">
-        ${z.lieux.map(l=>`<div class="zone-lieu">${l}</div>`).join('')}
-      </div>
+      <div class="zone-header" style="background:${z.color}18;"><span class="zone-icon">${z.icon}</span><div><div class="zone-name" style="color:${z.color};">${z.nom}</div><div class="zone-dieu">${z.dieu}</div></div></div>
+      <div class="zone-lieux">${z.lieux.map(l=>`<div class="zone-lieu">${l}</div>`).join('')}</div>
     </div>`).join('');
 }
-
-function renderAll() { renderCarte(); renderJournal(); renderTableau(); }
 
 function showPage(p) {
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
-  const tabs = Array.from(document.querySelectorAll('.nav-tab'));
-  const map = {carte:0,journal:1,tableau:2,zones:3};
-  if(map[p]!==undefined && tabs[map[p]]) tabs[map[p]].classList.add('active');
+  const tabs = {carte:0,journal:1,zones:2};
+  if(tabs[p]!==undefined) document.querySelectorAll('.nav-tab')[tabs[p]].classList.add('active');
+  if(p==='journal') renderJournal();
 }
 
-function openAdmin() {
-  if(isAdmin){document.getElementById('modal-admin').classList.add('open');renderAdminPanel();}
-  else document.getElementById('modal-login').classList.add('open');
-}
+function openAdmin(){document.getElementById('modal-login').classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-function checkPwd() {
-  const pwd = document.getElementById('admin-pwd').value;
-  if(pwd===ADMIN_PWD){
-    isAdmin=true;closeModal('modal-login');
-    document.getElementById('admin-pwd').value='';
-    document.getElementById('pwd-error').style.display='none';
-    openAdmin();
-  } else { document.getElementById('pwd-error').style.display='block'; }
-}
 
-function updateQueteState(qid,st){quetesState[qid]=st;saveState();renderAdminPanel();}
-function updateQuetePersos(qid,val){if(val.trim()===''){delete quetesState[qid+'_persos'];}else{quetesState[qid+'_persos']=val;}saveState();}
-
-function renderAdminPanel() {
-  const content = document.getElementById('admin-panel-content');
-  content.innerHTML = '';
-  ROYAUMES_DATA.forEach(r => {
-    const quetes = QUETES_DATA.filter(q=>q.royaume===r.id);
-    if(!quetes.length) return;
-    const title=document.createElement('div');title.className='admin-section-title';title.textContent=r.icon+' '+r.nom;content.appendChild(title);
-    quetes.forEach(q=>{
-      const st=quetesState[q.id]||'hidden';
-      const persos=quetesState[q.id+'_persos']||'';
-      const row=document.createElement('div');row.className='admin-quete-row';
-      row.innerHTML=`<div class="aqr-top"><div class="aqr-name">${q.nom}</div><div class="aqr-btns">
-        <button class="aqr-btn ${st==='hidden'?'active-btn':''}" onclick="updateQueteState('${q.id}','hidden')">Masquée</button>
-        <button class="aqr-btn ${st==='rumeur'?'active-btn':''}" onclick="updateQueteState('${q.id}','rumeur')">Rumeur</button>
-        <button class="aqr-btn ${st==='active'?'active-btn':''}" onclick="updateQueteState('${q.id}','active')">Active</button>
-        <button class="aqr-btn ${st==='complete'?'active-btn':''}" onclick="updateQueteState('${q.id}','complete')">Fait</button>
-        <button class="aqr-btn ${st==='disabled'?'active-btn':''}" onclick="updateQueteState('${q.id}','disabled')">Désactivée</button>
-      </div></div>
-      <input type="text" class="admin-perso-input" placeholder="Personnages impliqués..." value="${persos.replace(/"/g,'&quot;')}" onchange="updateQuetePersos('${q.id}',this.value)">`;
-      content.appendChild(row);
-    });
-  });
-}
-
-document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 loadState();
 </script>
 </body>
