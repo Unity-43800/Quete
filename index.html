@@ -76,6 +76,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .je-body.open{display:block;}
 .je-desc{font-size:15px;color:var(--text-dim);line-height:1.75;margin-top:.75rem;}
 .je-hint{font-size:13px;font-style:italic;color:var(--violet-light);margin-top:.6rem;padding:.5rem .8rem;border-left:2px solid var(--violet);background:rgba(127,119,221,.07);border-radius:0 6px 6px 0;}
+.je-persos{font-size:13px;color:var(--gold-light);margin-top:.6rem;padding:.5rem .8rem;background:rgba(201,168,76,.06);border-left:2px solid var(--gold-dim);border-radius:0 6px 6px 0;}
 .je-prereqs{margin-top:.6rem;}
 .prereq-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:.3rem;}
 .prereq-item{font-size:13px;color:var(--text-dim);padding:.2rem 0;}
@@ -115,12 +116,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .admin-input:focus{border-color:var(--violet);}
 .btn-primary{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:.65rem 1.5rem;background:linear-gradient(135deg,var(--violet-dim),var(--violet));color:white;border:none;border-radius:8px;cursor:pointer;transition:all .2s;}
 .btn-primary:hover{opacity:.85;transform:translateY(-1px);}
-.admin-quete-row{display:flex;align-items:center;gap:.6rem;padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;background:var(--surface);}
+
+.admin-quete-row{display:flex;flex-direction:column;gap:.5rem;padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;background:var(--surface);}
+.aqr-top{display:flex;align-items:center;gap:.6rem;width:100%;}
 .aqr-name{flex:1;font-size:14px;color:var(--text-dim);}
 .aqr-btns{display:flex;gap:.35rem;flex-wrap:wrap;}
 .aqr-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.05em;text-transform:uppercase;padding:.25rem .5rem;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer;transition:all .15s;white-space:nowrap;}
 .aqr-btn:hover{color:var(--gold);border-color:var(--gold-dim);}
 .aqr-btn.active-btn{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,168,76,.15);}
+.admin-perso-input{width:100%;background:var(--void);border:1px solid var(--border);border-radius:6px;padding:.4rem .6rem;color:var(--text);font-family:'Crimson Text',serif;font-size:13px;outline:none;transition:border-color .2s;}
+.admin-perso-input:focus{border-color:var(--gold-dim);}
+
 .admin-section-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-faint);margin:1.25rem 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
 .error-msg{font-size:13px;color:#E07070;margin-top:.4rem;font-style:italic;}
 
@@ -131,6 +137,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .stat-box{min-width:80px;padding:.6rem .9rem;}
 .nav-tabs{gap:.1rem;}
 .nav-tab{font-size:9px;padding:.3rem .5rem;}
+.aqr-top{flex-direction:column;align-items:flex-start;gap:.3rem;}
 }
 </style>
 </head>
@@ -199,9 +206,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 <script>
 // --- CONFIGURATION CLOUD JSONBIN ---
 const BIN_ID = '6a876da9da38895dfefcf1c8';
-// Utilisation de la Access Key fournie
 const API_KEY = '$2a$10$U4rbBQQTpeVgGtfOzA493uopHCK5m19wkdSFCVZ2YASy01xuPMKhq';
-const ADMIN_PWD = 'fromage'; // Mot de passe admin, modifiable si besoin
+const ADMIN_PWD = 'fromage'; 
 const LOCAL_KEY = 'pantheon_quetes_cloud_v3';
 
 // Générateur d'étoiles
@@ -261,7 +267,6 @@ const ROYAUMES_DATA = [
 let quetesState = {};
 
 // CHARGEMENT DEPUIS JSONBIN ET LOCALSTORAGE
-// CHARGEMENT DEPUIS JSONBIN ET LOCALSTORAGE
 async function loadState() {
   const saved = localStorage.getItem(LOCAL_KEY);
   if (saved) {
@@ -274,7 +279,6 @@ async function loadState() {
 
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-      // On force le téléphone à toujours demander la dernière version, sans utiliser son cache !
       cache: 'no-store',
       headers: { 'X-Access-Key': API_KEY } 
     });
@@ -294,9 +298,8 @@ async function loadState() {
 
 // SAUVEGARDE SUR JSONBIN
 async function saveState() {
-  // Sauvegarde locale instantanée (ce qui te donne l'illusion que ça marche sur PC)
   localStorage.setItem(LOCAL_KEY, JSON.stringify(quetesState));
-  renderAll();
+  renderAll(); // Rendu mis à jour directement
 
   const syncElem = document.getElementById('sync-status');
   if(syncElem) syncElem.textContent = "⏳ Sauvegarde cloud en cours...";
@@ -315,38 +318,6 @@ async function saveState() {
       if(res.ok) {
         syncElem.textContent = "✓ Enregistré en ligne pour tous les joueurs!";
       } else {
-        // Si ça plante, on veut savoir POURQUOI !
-        const err = await res.json();
-        syncElem.textContent = `⚠️ Erreur JSONBin: ${err.message || res.status}`;
-      }
-    }
-  } catch(e) {
-    if(syncElem) syncElem.textContent = "⚠️ Échec : Impossible de joindre le serveur Cloud.";
-  }
-}
-// SAUVEGARDE SUR JSONBIN
-async function saveState() {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(quetesState));
-  renderAll();
-
-  const syncElem = document.getElementById('sync-status');
-  if(syncElem) syncElem.textContent = "⏳ Sauvegarde cloud en cours...";
-
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Access-Key': API_KEY 
-      },
-      body: JSON.stringify(quetesState)
-    });
-    
-    if(syncElem) {
-      if(res.ok) {
-        syncElem.textContent = "✓ Enregistré en ligne pour tous les joueurs!";
-      } else {
-        // On récupère le message d'erreur EXACT de JSONBin
         const err = await res.json();
         console.error("Erreur JSONBin détaillée :", err);
         syncElem.textContent = `⚠️ Erreur JSONBin: ${err.message || res.status}`;
@@ -444,15 +415,21 @@ function renderJournal() {
   }
   visible.forEach(q => {
     const st = quetesState[q.id];
+    const persos = quetesState[q.id + '_persos']; // Récupération des persos
     const royaume = ROYAUMES_DATA.find(r=>r.id===q.royaume);
+    
     const entry = document.createElement('div');
     entry.className = 'journal-entry';
     const titleCls = st==='rumeur'?'rumeur':st==='complete'?'complete':'';
     const nom = st==='rumeur'?'Rumeur inconnue…':q.nom;
+    
     const desc = st==='rumeur'?`<p class="je-desc" style="font-style:italic;color:var(--violet-light);">${q.rumeur}</p>`
     :`<p class="je-desc">${q.desc}</p>${q.hint?`<p class="je-hint">💡 ${q.hint}</p>`:''}`;
+    
+    const persosHtml = (persos && st !== 'rumeur') ? `<div class="je-persos">👥 <strong>Impliqués :</strong> ${persos}</div>` : '';
     const prereqHtml = q.prereqs.length>0&&st!=='rumeur'?`<div class="je-prereqs"><p class="prereq-label">Prérequis</p>${q.prereqs.map(p=>`<div class="prereq-item">${p}</div>`).join('')}</div>`:'';
     const completeBadge = st==='complete'?'<span class="je-complete-badge">✓ Terminée</span>':'';
+    
     entry.innerHTML = `
       <div class="je-header" onclick="toggleEntry('je-${q.id}',this)">
         <div class="je-status ${dotClass(st)}"></div>
@@ -462,6 +439,7 @@ function renderJournal() {
       </div>
       <div class="je-body" id="je-${q.id}">
         ${desc}
+        ${persosHtml}
         ${prereqHtml}
         ${completeBadge}
       </div>
@@ -560,6 +538,15 @@ function updateQueteState(qid, st) {
   renderAdminPanel();
 }
 
+function updateQuetePersos(qid, val) {
+  if (val.trim() === '') {
+    delete quetesState[qid + '_persos'];
+  } else {
+    quetesState[qid + '_persos'] = val;
+  }
+  saveState();
+}
+
 function renderAdminPanel() {
   const content = document.getElementById('admin-panel-content');
   content.innerHTML = '';
@@ -575,16 +562,20 @@ function renderAdminPanel() {
 
     quetes.forEach(q => {
       const st = quetesState[q.id] || 'hidden';
+      const persos = quetesState[q.id + '_persos'] || '';
       const row = document.createElement('div');
       row.className = 'admin-quete-row';
       row.innerHTML = `
-        <div class="aqr-name">${q.nom}</div>
-        <div class="aqr-btns">
-          <button class="aqr-btn ${st==='hidden'?'active-btn':''}" onclick="updateQueteState('${q.id}','hidden')">Masquée</button>
-          <button class="aqr-btn ${st==='rumeur'?'active-btn':''}" onclick="updateQueteState('${q.id}','rumeur')">Rumeur</button>
-          <button class="aqr-btn ${st==='active'?'active-btn':''}" onclick="updateQueteState('${q.id}','active')">Active</button>
-          <button class="aqr-btn ${st==='complete'?'active-btn':''}" onclick="updateQueteState('${q.id}','complete')">Fait</button>
+        <div class="aqr-top">
+          <div class="aqr-name">${q.nom}</div>
+          <div class="aqr-btns">
+            <button class="aqr-btn ${st==='hidden'?'active-btn':''}" onclick="updateQueteState('${q.id}','hidden')">Masquée</button>
+            <button class="aqr-btn ${st==='rumeur'?'active-btn':''}" onclick="updateQueteState('${q.id}','rumeur')">Rumeur</button>
+            <button class="aqr-btn ${st==='active'?'active-btn':''}" onclick="updateQueteState('${q.id}','active')">Active</button>
+            <button class="aqr-btn ${st==='complete'?'active-btn':''}" onclick="updateQueteState('${q.id}','complete')">Fait</button>
+          </div>
         </div>
+        <input type="text" class="admin-perso-input" placeholder="Personnages impliqués..." value="${persos.replace(/"/g, '&quot;')}" onchange="updateQuetePersos('${q.id}', this.value)">
       `;
       content.appendChild(row);
     });
