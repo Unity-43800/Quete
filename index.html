@@ -305,7 +305,10 @@ async function loadState() {
   renderAll();
   
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': API_KEY } });
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { 
+      // Remplacement par X-Access-Key pour correspondre à ta clé
+      headers: { 'X-Access-Key': API_KEY } 
+    });
     if (res.ok) {
       const data = await res.json();
       if (data.record) {
@@ -315,8 +318,10 @@ async function loadState() {
         localStorage.setItem(LOCAL_KEY, JSON.stringify({quetesState, questCharsState, locationsState}));
         renderAll();
       }
+    } else {
+      console.error("Erreur de lecture en ligne :", res.status);
     }
-  } catch (err) { console.log('Erreur cloud', err); }
+  } catch (err) { console.error('Erreur cloud', err); }
 }
 
 async function saveState() {
@@ -328,12 +333,23 @@ async function saveState() {
   setTimeout(() => { notif.style.display = 'none'; }, 3000);
 
   try {
-    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+      headers: { 
+        'Content-Type': 'application/json', 
+        // Remplacement par X-Access-Key pour correspondre à ta clé
+        'X-Access-Key': API_KEY 
+      },
       body: JSON.stringify({ quetesState, questCharsState, locationsState, lastUpdate: new Date().toISOString() })
     });
-  } catch(e) { console.log('Erreur de sauvegarde cloud', e); }
+    
+    if (!res.ok) {
+      alert("Erreur de sauvegarde en ligne. La modification est sauvegardée sur ton appareil, mais pas pour les autres joueurs.");
+    }
+  } catch(e) { 
+    console.error('Erreur de sauvegarde cloud', e);
+    alert("Impossible de joindre le serveur. Vérifie ta connexion.");
+  }
 }
 
 // ══════════════════════════════════════════
