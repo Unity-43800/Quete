@@ -22,69 +22,83 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .nav-tabs{display:flex;gap:.2rem;}
 .nav-tab{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:.3rem .6rem;border-radius:6px;border:1px solid transparent;background:none;color:var(--text-faint);cursor:pointer;transition:all .2s;}
 .nav-tab.active,.nav-tab:hover{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,168,76,.07);}
+.nav-admin-btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em;padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer;transition:all .2s;}
+.nav-admin-btn:hover{color:var(--violet-light);border-color:var(--violet);}
 .page{display:none;position:relative;z-index:1;padding-top:66px;min-height:100vh;}
 .page.active{display:block;}
 .page-h{text-align:center;padding:2rem 1.25rem 1.5rem;}
 .page-h h1{font-family:'Cinzel',serif;font-size:clamp(22px,5vw,42px);font-weight:700;background:linear-gradient(135deg,var(--gold-light),var(--violet-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem;}
+.page-h p{font-size:15px;font-style:italic;color:var(--text-dim);}
 
 /* GALAXIE & PLANETES */
-.map-container {
-  position: relative; width: 95%; max-width: 1100px; aspect-ratio: 16/10; margin: 0 auto;
-  background: radial-gradient(circle at center, #1A1530 0%, #080610 100%);
-  border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-}
+.map-container { position: relative; width: 95%; max-width: 1100px; aspect-ratio: 16/10; margin: 0 auto; background: radial-gradient(circle at center, #1A1530 0%, #080610 100%); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .galaxy-view { position: absolute; inset: 0; transition: opacity 0.4s; }
-.galaxy-view.hidden { opacity: 0; pointer-events: none; }
-
-.planet-node {
-  position: absolute; transform: translate(-50%, -50%);
-  display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s;
-}
+.galaxy-view.hidden { opacity: 0; pointer-events: none; transform: scale(1.1); }
+.planet-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
 .planet-node:hover { transform: translate(-50%, -50%) scale(1.15); z-index: 10; }
-.planet-sphere {
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, currentColor, transparent 80%);
-  box-shadow: inset -10px -10px 20px rgba(0,0,0,0.6), 0 0 15px currentColor;
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; color: rgba(255,255,255,0.8);
-}
-.planet-label {
-  margin-top: 8px; font-family: 'Cinzel', serif; font-size: 11px; color: var(--text);
-  background: rgba(8,6,16,0.85); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); white-space: nowrap;
-}
+.planet-sphere { border-radius: 50%; background: radial-gradient(circle at 30% 30%, currentColor, transparent 80%); box-shadow: inset -10px -10px 20px rgba(0,0,0,0.6), 0 0 15px currentColor; position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: rgba(255,255,255,0.8); }
+.planet-label { margin-top: 8px; font-family: 'Cinzel', serif; font-size: 11px; color: var(--text); background: rgba(8,6,16,0.85); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); white-space: nowrap; backdrop-filter: blur(4px); }
+.pin-status { position: absolute; top: -5px; right: -5px; font-size: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; z-index: 5; }
 
-/* VUE SURFACE (INTERIEUR PLANETE) */
-.surface-view {
-  position: absolute; inset: 0; background: rgba(8,6,16,0.95); backdrop-filter: blur(10px);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 20;
-}
-.surface-view.active { opacity: 1; pointer-events: auto; }
+/* VUE SURFACE */
+.surface-view { position: absolute; inset: 0; background: rgba(8,6,16,0.95); backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, transform 0.4s; transform: scale(0.9); z-index: 20; }
+.surface-view.active { opacity: 1; pointer-events: auto; transform: scale(1); }
 .sv-header { position: absolute; top: 1.5rem; left: 1.5rem; right: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; z-index: 30; }
-.sv-btn { font-family: 'Cinzel', serif; font-size: 10px; text-transform: uppercase; padding: 0.5rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; }
+.sv-btn { font-family: 'Cinzel', serif; font-size: 10px; text-transform: uppercase; padding: 0.5rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; transition: 0.2s; }
 .sv-btn:hover { background: rgba(255,255,255,0.1); }
 .sv-title { text-align: center; }
 .sv-title h2 { font-family: 'Cinzel', serif; font-size: 24px; margin-bottom: 0.2rem; }
 .sv-title p { font-size: 12px; color: var(--text-dim); font-style: italic; }
-
-.giant-planet {
-  width: 70%; aspect-ratio: 1; max-width: 500px; border-radius: 50%;
-  position: relative; box-shadow: inset -20px -20px 50px rgba(0,0,0,0.8);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-.location-pin {
-  position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s;
-}
+.giant-planet { width: 70%; aspect-ratio: 1; max-width: 500px; border-radius: 50%; position: relative; box-shadow: inset -20px -20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s ease; }
+.location-pin { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; }
 .location-pin:hover { transform: translate(-50%, -50%) scale(1.2); z-index: 10; }
 .loc-dot { width: 12px; height: 12px; border-radius: 50%; background: white; box-shadow: 0 0 10px white; border: 2px solid var(--void); }
-.loc-label { margin-top: 5px; font-size: 11px; background: rgba(0,0,0,0.7); padding: 2px 6px; border-radius: 4px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.2); }
+.loc-label { margin-top: 5px; font-family: 'Cinzel', serif; font-size: 11px; background: rgba(0,0,0,0.75); padding: 3px 6px; border-radius: 4px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(2px); }
 
-/* RESTE DES STYLES POUR LE JOURNAL (Identique) */
+/* JOURNAL & ZONES */
 .journal-entry{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin-bottom:1rem;overflow:hidden;}
 .je-header{padding:.9rem 1.1rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;}
+.je-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-hidden{background:var(--text-faint);opacity:.4;}
+.dot-rumeur{background:var(--violet);animation:pulse 2s infinite;}
+.dot-active{background:var(--gold);}
+.dot-complete{background:#2A6B3A;}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 .je-title{font-family:'Cinzel',serif;font-size:13px;color:var(--text);flex:1;}
+.je-title.rumeur{color:var(--violet-light);}
+.je-title.complete{color:#4A9B5A;}
 .je-meta{font-size:11px;color:var(--text-faint);}
+.je-body{display:none;padding:0 1.1rem 1rem;border-top:1px solid var(--border);}
+.je-body.open{display:block;}
+.je-desc{font-size:15px;color:var(--text-dim);line-height:1.75;margin-top:.75rem;}
+.je-hint{font-size:13px;font-style:italic;color:var(--violet-light);margin-top:.6rem;padding:.5rem .8rem;border-left:2px solid var(--violet);background:rgba(127,119,221,.07);border-radius:0 6px 6px 0;}
+.filter-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.filter-btn{font-family:'Cinzel',serif;font-size:10px;text-transform:uppercase;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer;transition:all .2s;}
+.filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08);}
+.zones-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;max-width:1100px;margin:0 auto;padding:0 1.25rem;}
+.zone-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.zone-header{padding:.9rem 1.1rem .6rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.zone-icon{font-size:24px;flex-shrink:0;}
+.zone-name{font-family:'Cinzel',serif;font-size:13px;}
+.zone-dieu{font-size:11px;color:var(--text-faint);font-style:italic;}
+.zone-lieux{padding:.6rem 1.1rem .9rem;}
+.zone-lieu{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid rgba(46,37,80,.4);font-size:13px;color:var(--text-dim);}
+.zone-lieu:last-child{border-bottom:none;}
+
+/* ADMIN MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(8,6,16,.92);z-index:200;align-items:center;justify-content:center;padding:1.25rem;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--panel);border:1px solid var(--violet);border-radius:18px;padding:1.75rem;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;position:relative;}
+.modal h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:1.25rem;}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:1px solid var(--border);color:var(--text-dim);width:30px;height:30px;border-radius:50%;cursor:pointer;}
+.admin-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;color:var(--text);font-family:'Crimson Text',serif;font-size:16px;outline:none;margin-bottom:.75rem;}
+.btn-primary{font-family:'Cinzel',serif;font-size:11px;text-transform:uppercase;padding:.65rem 1.5rem;background:linear-gradient(135deg,var(--violet-dim),var(--violet));color:white;border:none;border-radius:8px;cursor:pointer;}
+.admin-quete-row{display:flex;flex-direction:column;gap:.5rem;padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;background:var(--surface);}
+.aqr-top{display:flex;align-items:center;gap:.6rem;width:100%;}
+.aqr-name{flex:1;font-size:14px;color:var(--text-dim);}
+.aqr-btns{display:flex;gap:.35rem;flex-wrap:wrap;}
+.aqr-btn{font-family:'Cinzel',serif;font-size:9px;text-transform:uppercase;padding:.25rem .5rem;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer;}
+.aqr-btn.active-btn{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,168,76,.15);}
 
 @media(max-width:700px){
   .map-container { aspect-ratio: 1/1.2; }
@@ -99,10 +113,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('carte')">🗺 Carte</button>
     <button class="nav-tab" onclick="showPage('journal')">📖 Journal</button>
+    <button class="nav-tab" onclick="showPage('zones')">🗾 Zones</button>
   </div>
+  <button class="nav-admin-btn" onclick="openAdmin()">⚙</button>
 </nav>
 
-<!-- PAGE CARTE -->
 <div class="page active" id="page-carte">
   <div class="page-h">
     <h1>La Galaxie</h1>
@@ -110,10 +125,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
   </div>
   
   <div class="map-container" id="map-container">
-    <!-- NIVEAU 1 : GALAXIE -->
     <div class="galaxy-view" id="galaxy-view"></div>
-    
-    <!-- NIVEAU 2 : INTERIEUR DE LA PLANETE -->
     <div class="surface-view" id="surface-view">
       <div class="sv-header">
         <button class="sv-btn" onclick="closePlanet()">⟵ Retour</button>
@@ -128,77 +140,175 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
   </div>
 </div>
 
-<!-- PAGE JOURNAL -->
 <div class="page" id="page-journal">
   <div class="page-h"><h1>Journal des Voies</h1></div>
-  <div style="max-width:720px;margin:0 auto;padding:0 1.25rem 1rem;" id="journal-list">
-    <p style="text-align:center; color:var(--text-faint);">Connectez vos quêtes ici.</p>
+  <div style="max-width:720px;margin:0 auto;padding:0 1.25rem 1rem;">
+    <div class="filter-row" id="filter-row"></div>
+    <div id="journal-list"></div>
+  </div>
+</div>
+
+<div class="page" id="page-zones">
+  <div class="page-h"><h1>Index des Zones</h1></div>
+  <div class="zones-grid" id="zones-grid"></div>
+</div>
+
+<div class="modal-overlay" id="modal-login">
+  <div class="modal" style="max-width:380px;">
+    <button class="modal-close" onclick="closeModal('modal-login')">×</button>
+    <h2>Accès Admin</h2>
+    <input class="admin-input" type="password" id="admin-pwd" placeholder="Mot de passe…" onkeydown="if(event.key==='Enter')checkPwd()">
+    <button class="btn-primary" onclick="checkPwd()">Entrer</button>
+    <p class="error-msg" id="pwd-error" style="display:none;color:#E07070;font-size:13px;margin-top:.4rem;">Erreur.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-admin">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-admin')">×</button>
+    <h2>⚙ Panneau Admin</h2>
+    <div id="sync-status" style="font-size:11px;color:var(--gold);margin-bottom:1rem;"></div>
+    <div id="admin-panel-content"></div>
   </div>
 </div>
 
 <script>
-// ETOILES DE FOND
-const container = document.getElementById('stars');
+// --- CONFIGURATION ADMIN & CLOUD ---
+const BIN_ID = '6a876da9da38895dfefcf1c8';
+const API_KEY = '$2a$10$U4rbBQQTpeVgGtfOzA493uopHCK5m19wkdSFCVZ2YASy01xuPMKhq';
+const ADMIN_PWD = 'fromage';
+const LOCAL_KEY = 'pantheon_quetes_cloud_v4';
+
+// --- DONNEES ---
+const ZONES_DATA = [
+  {id:'axiom', nom:'Axiøm', icon:'🏛', dieu:'Kenjaku · Imu', color:'#7F77DD', size:80, x:50, y:40, lieux:['Palais royal','Cour dorée (jardin d\'Imu)','Forge souterraine (Radagon)','Place originelle','Citadelle des dieux','Pavillon professionnel','Quartier administratif (43)']},
+  {id:'akropis', nom:'Akropis', icon:'⚔', dieu:'Ju Fa · Destruction', color:'#C94A4A', size:65, x:20, y:45, lieux:['Palais royal','Place des exécutions','Arène','Aile des serviteurs','Onigashima (Kaido)']},
+  {id:'sugarland', nom:'Sugar Land', icon:'🍯', dieu:'Gojo · Préservation', color:'#4A8BC9', size:55, x:30, y:20, lieux:['Palais','Prairie du miel','Temple des gâteaux']},
+  {id:'allpink', nom:'All Pink', icon:'🌿', dieu:'Tao Fa · Abondance', color:'#4AC97A', size:55, x:15, y:20, lieux:['Hôpital','Palais','Jardin des bénédictions (Nirumu)']},
+  {id:'atlantis', nom:'Atlantis', icon:'🧠', dieu:'Gui Fa · Érudition', color:'#4A7BC9', size:60, x:35, y:85, lieux:['Palais','Université','Bibliothèque','Résidences des savants','Bureau du directeur']},
+  {id:'circcus', nom:'The Circcus', icon:'🎉', dieu:'Kye Rong · Allégresse', color:'#C94AC9', size:50, x:65, y:85, lieux:['Centre commercial','Palais','Parc d\'attraction']},
+  {id:'essaim', nom:'L\'Essaim', icon:'🦟', dieu:'Ran · Propagation', color:'#7AC94A', size:45, x:15, y:75, lieux:['Palais','La Ruche']},
+  {id:'lune', nom:'Empire Lunaire', icon:'🌹', dieu:'Jinshi · Beauté', color:'#C94A7A', size:45, x:65, y:25, lieux:['Cour intérieure','Palais','Théâtre']},
+  {id:'concordia', nom:'Concordia', icon:'🎺', dieu:'Zhu Jin · Harmonie', color:'#C9A84C', size:55, x:65, y:55, lieux:['Palais','Citadelle des voyageurs','Hôtel','Salle de concert']},
+  {id:'mujiland', nom:'Mujiland', icon:'🕳', dieu:'Muji · Nihilité', color:'#888880', size:50, x:88, y:20, lieux:['La Ville','Chez Muji','Mafia de la Bougie','Buggy Land']},
+  {id:'falconia', nom:'Falconia', icon:'🎯', dieu:'Griffith · Chasse', color:'#C97A4A', size:60, x:85, y:55, lieux:['Siège militaire','Palais','Tribunal céleste']},
+  {id:'planete43', nom:'Dimension 43', icon:'❓', dieu:'Kye Sook · Énigmata', color:'#AFA9EC', size:45, x:85, y:85, lieux:['Vide intersidéral']},
+  {id:'jardin', nom:'Jardin Mémoire', icon:'⌛', dieu:'Undertaker · Souvenir', color:'#9B96B8', size:45, x:70, y:10, lieux:['Archives mémorielles','Le Seuil']},
+  {id:'kuya', nom:'Territoire Kuya', icon:'🫗', dieu:'Kuya · Voracité', color:'#C9A84C', size:45, x:30, y:10, lieux:['Terres informes','Le Cratère']},
+  {id:'entreterre', nom:'Entre-Terre', icon:'🩸', dieu:'Marika · Ordre brisé', color:'#8B2020', size:55, x:50, y:65, lieux:['Leyndell','Manoir du Lion Rouge','Palais de l\'Empaleur','Mohgwyn','Table Ronde']}
+];
+
+const QUETES_DATA = [
+  {id:'q_43',royaume:'axiom',nom:'43',rumeur:'Une fonctionnaire...',desc:'Une fonctionnaire d\'Axiøm...',hint:'Penser à elle...',prereqs:[],type:'principale'},
+  {id:'q_jufa',royaume:'akropis',nom:'La Destruction',rumeur:'Le seigneur...',desc:'Intégrez-vous à Akropis...',hint:'La force brute...',prereqs:[],type:'principale'},
+  {id:'q_muji',royaume:'mujiland',nom:'La Nihilité',rumeur:'Le royaume...',desc:'Mujiland résiste...',hint:'Cherchez ce qui ne colle pas...',prereqs:[],type:'principale'},
+];
+
+let quetesState = {};
+let isAdmin = false;
+let activeFilter = 'all';
+
+// --- INITIALISATION ---
+const starsContainer = document.getElementById('stars');
 for(let i=0;i<80;i++){
   const s=document.createElement('div');s.className='star';
   s.style.width=Math.random()*2+1+'px';s.style.height=s.style.width;
   s.style.top=Math.random()*100+'%';s.style.left=Math.random()*100+'%';
   s.style.setProperty('--d',Math.random()*3+2+'s');
-  container.appendChild(s);
+  starsContainer.appendChild(s);
 }
 
-// DONNEES (Planètes et leurs lieux)
-const ZONES_DATA = [
-  {id:'axiom', nom:'Axiøm', icon:'🏛', dieu:'Kenjaku · Imu', color:'#7F77DD', size:80, x:50, y:40, lieux:['Palais royal','Cour dorée','Forge souterraine','Place originelle','Citadelle des dieux','Pavillon','Quartier 43']},
-  {id:'akropis', nom:'Akropis', icon:'⚔', dieu:'Ju Fa', color:'#C94A4A', size:60, x:20, y:45, lieux:['Palais royal','Place exécutions','Arène','Aile serviteurs','Onigashima']},
-  {id:'allpink', nom:'All Pink', icon:'🌿', dieu:'Tao Fa', color:'#4AC97A', size:55, x:15, y:20, lieux:['Hôpital','Palais','Jardin bénédictions']},
-  {id:'atlantis', nom:'Atlantis', icon:'🧠', dieu:'Gui Fa', color:'#4A7BC9', size:65, x:35, y:85, lieux:['Palais','Université','Bibliothèque','Résidences','Bureau']},
-  {id:'falconia', nom:'Falconia', icon:'🎯', dieu:'Griffith', color:'#C97A4A', size:70, x:85, y:55, lieux:['Siège militaire','Palais','Tribunal']},
-  {id:'mujiland', nom:'Mujiland', icon:'🕳', dieu:'Muji', color:'#888880', size:50, x:88, y:20, lieux:['La Ville','Chez Muji','Mafia Bougie','Buggy Land']}
-];
-
-// INITIALISATION GALAXIE
-const galaxyView = document.getElementById('galaxy-view');
-
-ZONES_DATA.forEach(z => {
-  const node = document.createElement('div');
-  node.className = 'planet-node';
-  node.style.left = z.x + '%';
-  node.style.top = z.y + '%';
-  node.style.color = z.color;
+// --- CLOUD & SAUVEGARDE ---
+async function loadState() {
+  const local = localStorage.getItem(LOCAL_KEY);
+  if (local) { try { quetesState = JSON.parse(local); } catch(e){} }
+  renderAll();
   
-  // Ouvre la planète au clic
-  node.onclick = () => openPlanet(z);
-  
-  node.innerHTML = `
-    <div class="planet-sphere" style="width:${z.size}px; height:${z.size}px; background-color:${z.color}33;">${z.icon}</div>
-    <div class="planet-label">${z.nom}</div>
-  `;
-  galaxyView.appendChild(node);
-});
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.record && data.record.quetesState) {
+        quetesState = data.record.quetesState;
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(quetesState));
+        renderAll();
+      }
+    }
+  } catch (err) { console.log('Erreur chargement cloud', err); }
+}
 
-// GESTION SURFACE (Intérieur de la planète)
+async function saveToCloud() {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(quetesState));
+  const status = document.getElementById('sync-status');
+  if(status) status.textContent = 'Synchronisation cloud...';
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+      body: JSON.stringify({ quetesState, lastUpdate: new Date().toISOString() })
+    });
+    if(res.ok && status) status.textContent = '✓ Sauvegardé sur le cloud';
+  } catch(e) { if(status) status.textContent = '⚠ Erreur de synchronisation'; }
+}
+
+// --- RENDU GLOBAL ---
+function renderAll() {
+  renderGalaxie();
+  renderFilters();
+  renderJournal();
+  renderZones();
+  if (isAdmin) renderAdminPanel();
+}
+
+// --- LOGIQUE CARTE ---
+function renderGalaxie() {
+  const galaxyView = document.getElementById('galaxy-view');
+  galaxyView.innerHTML = '';
+  
+  ZONES_DATA.forEach(z => {
+    const quetes = QUETES_DATA.filter(q => q.royaume === z.id);
+    const actives = quetes.filter(q => quetesState[q.id] === 'active').length;
+    const rumeurs = quetes.filter(q => quetesState[q.id] === 'rumeur').length;
+    
+    let statusBadge = '';
+    if (actives > 0) statusBadge = `<div class="pin-status" style="color:var(--gold); border-color:var(--gold);">${actives}</div>`;
+    else if (rumeurs > 0) statusBadge = `<div class="pin-status" style="color:var(--violet); border-color:var(--violet);">?</div>`;
+
+    const node = document.createElement('div');
+    node.className = 'planet-node';
+    node.style.left = z.x + '%';
+    node.style.top = z.y + '%';
+    node.style.color = z.color;
+    node.onclick = () => openPlanet(z);
+    
+    node.innerHTML = `
+      ${statusBadge}
+      <div class="planet-sphere" style="width:${z.size}px; height:${z.size}px; background-color:${z.color}33;">${z.icon}</div>
+      <div class="planet-label">${z.nom}</div>
+    `;
+    galaxyView.appendChild(node);
+  });
+}
+
 function openPlanet(zone) {
   document.getElementById('galaxy-view').classList.add('hidden');
   const surface = document.getElementById('surface-view');
   
-  // Infos Header
   document.getElementById('sv-name').textContent = zone.nom;
   document.getElementById('sv-name').style.color = zone.color;
   document.getElementById('sv-god').textContent = zone.dieu;
   
-  // Dessin de la planète géante
   const giant = document.getElementById('giant-planet');
-  giant.style.backgroundColor = `${zone.color}22`; // Teinte transparente
+  giant.style.backgroundColor = `${zone.color}22`;
   giant.style.boxShadow = `inset -20px -20px 50px rgba(0,0,0,0.8), 0 0 100px ${zone.color}44`;
-  giant.innerHTML = ''; // Reset des anciens lieux
+  giant.innerHTML = ''; 
   
-  // Répartition géométrique des lieux en cercle à l'intérieur
   const total = zone.lieux.length;
   zone.lieux.forEach((lieu, index) => {
-    // Calcul mathématique pour répartir les points en cercle
     const angle = (index / total) * Math.PI * 2;
-    const radius = 35; // % de distance par rapport au centre
+    const radius = 35;
     const posX = 50 + radius * Math.cos(angle);
     const posY = 50 + radius * Math.sin(angle);
     
@@ -207,8 +317,7 @@ function openPlanet(zone) {
     pin.style.left = posX + '%';
     pin.style.top = posY + '%';
     
-    // Action au clic sur un lieu
-    pin.onclick = () => alert(`Vous avez cliqué sur : ${lieu}\n(Lien vers le journal de la zone en développement)`);
+    pin.onclick = () => alert(`Lieu : ${lieu}`);
     
     pin.innerHTML = `
       <div class="loc-dot" style="background:${zone.color}; box-shadow:0 0 10px ${zone.color}"></div>
@@ -217,10 +326,10 @@ function openPlanet(zone) {
     giant.appendChild(pin);
   });
   
-  // Bouton quêtes
   document.getElementById('sv-quest-btn').onclick = () => {
+    closePlanet();
     showPage('journal');
-    // Ici on pourrait filtrer le journal
+    setFilter(zone.id);
   };
 
   surface.classList.add('active');
@@ -231,14 +340,119 @@ function closePlanet() {
   document.getElementById('galaxy-view').classList.remove('hidden');
 }
 
-// NAVIGATION
+// --- LOGIQUE JOURNAL & ZONES ---
+function renderFilters() {
+  const row = document.getElementById('filter-row');
+  row.innerHTML = `<button class="filter-btn ${activeFilter==='all'?'active':''}" onclick="setFilter('all')">Tout</button>` +
+    ZONES_DATA.map(z => {
+      const qs = QUETES_DATA.filter(q => q.royaume === z.id && quetesState[q.id] && quetesState[q.id] !== 'hidden');
+      if (qs.length === 0) return '';
+      return `<button class="filter-btn ${activeFilter===z.id?'active':''}" onclick="setFilter('${z.id}')">${z.nom}</button>`;
+    }).join('');
+}
+
+function setFilter(f) { activeFilter = f; renderFilters(); renderJournal(); }
+function toggleEntry(id) { document.getElementById('je-body-'+id).classList.toggle('open'); }
+
+function renderJournal() {
+  const list = document.getElementById('journal-list');
+  const visible = QUETES_DATA.filter(q => {
+    const st = quetesState[q.id] || 'hidden';
+    if (st === 'hidden') return false;
+    if (activeFilter !== 'all' && q.royaume !== activeFilter) return false;
+    return true;
+  });
+
+  if (visible.length === 0) {
+    list.innerHTML = '<p style="text-align:center;color:var(--text-faint);padding:2rem;">Aucune quête connue.</p>';
+    return;
+  }
+
+  list.innerHTML = visible.map(q => {
+    const st = quetesState[q.id];
+    const z = ZONES_DATA.find(x => x.id === q.royaume);
+    const titleClass = st === 'rumeur' ? 'rumeur' : (st === 'complete' ? 'complete' : '');
+    const titleText = st === 'rumeur' ? q.rumeur : q.nom;
+    const bodyContent = st === 'rumeur' ? `<div class="je-desc">Rumeur : ${q.desc}</div>` : `<div class="je-desc">${q.desc}</div><div class="je-hint">Objectif : ${q.hint}</div>`;
+
+    return `
+      <div class="journal-entry">
+        <div class="je-header" onclick="toggleEntry('${q.id}')">
+          <div class="je-status dot-${st}"></div>
+          <div class="je-title ${titleClass}">${titleText}</div>
+          <div class="je-meta">${z ? z.nom : ''}</div>
+        </div>
+        <div class="je-body" id="je-body-${q.id}">${bodyContent}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderZones() {
+  const grid = document.getElementById('zones-grid');
+  grid.innerHTML = ZONES_DATA.map(z => `
+    <div class="zone-card" onmouseover="this.style.borderColor='${z.color}'" onmouseout="this.style.borderColor='var(--border)'">
+      <div class="zone-header" style="background:${z.color}18;"><span class="zone-icon">${z.icon}</span><div><div class="zone-name" style="color:${z.color};">${z.nom}</div><div class="zone-dieu">${z.dieu}</div></div></div>
+      <div class="zone-lieux">${z.lieux.map(l=>`<div class="zone-lieu">${l}</div>`).join('')}</div>
+    </div>`).join('');
+}
+
+// --- LOGIQUE ADMIN ---
+function openAdmin() {
+  if(isAdmin) document.getElementById('modal-admin').classList.add('open');
+  else document.getElementById('modal-login').classList.add('open');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function checkPwd() {
+  const pwd = document.getElementById('admin-pwd').value;
+  if(pwd === ADMIN_PWD) {
+    isAdmin = true;
+    closeModal('modal-login');
+    document.getElementById('admin-pwd').value = '';
+    document.getElementById('pwd-error').style.display = 'none';
+    renderAdminPanel();
+    document.getElementById('modal-admin').classList.add('open');
+  } else {
+    document.getElementById('pwd-error').style.display = 'block';
+  }
+}
+
+function renderAdminPanel() {
+  const content = document.getElementById('admin-panel-content');
+  content.innerHTML = QUETES_DATA.map(q => {
+    const st = quetesState[q.id] || 'hidden';
+    return `
+      <div class="admin-quete-row">
+        <div class="aqr-top">
+          <div class="aqr-name">${q.nom}</div>
+          <div class="aqr-btns">
+            <button class="aqr-btn ${st==='hidden'?'active-btn':''}" onclick="setQueteState('${q.id}','hidden')">Caché</button>
+            <button class="aqr-btn ${st==='rumeur'?'active-btn':''}" onclick="setQueteState('${q.id}','rumeur')">Rumeur</button>
+            <button class="aqr-btn ${st==='active'?'active-btn':''}" onclick="setQueteState('${q.id}','active')">Actif</button>
+            <button class="aqr-btn ${st==='complete'?'active-btn':''}" onclick="setQueteState('${q.id}','complete')">Terminé</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function setQueteState(qId, state) {
+  quetesState[qId] = state;
+  renderAll();
+  saveToCloud();
+}
+
 function showPage(p) {
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
-  if(p==='carte') document.querySelectorAll('.nav-tab')[0].classList.add('active');
-  if(p==='journal') document.querySelectorAll('.nav-tab')[1].classList.add('active');
+  const tabs = {carte:0,journal:1,zones:2};
+  if(tabs[p]!==undefined) document.querySelectorAll('.nav-tab')[tabs[p]].classList.add('active');
 }
+
+loadState();
 </script>
 </body>
 </html>
