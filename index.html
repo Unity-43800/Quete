@@ -7,10 +7,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --void: #080610; --deep: #0E0B1A; --surface: #14102A; --panel: #1A1530;
-  --border: #2E2550; --gold: #C9A84C; --gold-light: #E8C96A; --gold-dim: #7A5E1A;
-  --violet: #7F77DD; --violet-light: #AFA9EC; --violet-dim: #3C3489;
-  --text: #E8E4F4; --text-dim: #9B96B8; --text-faint: #514D6E;
+  --void: #080610;
+  --deep: #0E0B1A;
+  --surface: #14102A;
+  --panel: #1A1530;
+  --border: #2E2550;
+  --gold: #C9A84C;
+  --gold-light: #E8C96A;
+  --gold-dim: #7A5E1A;
+  --violet: #7F77DD;
+  --violet-light: #AFA9EC;
+  --violet-dim: #3C3489;
+  --text: #E8E4F4;
+  --text-dim: #9B96B8;
+  --text-faint: #514D6E;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--void);color:var(--text);font-family:'Crimson Text',Georgia,serif;min-height:100vh;overflow-x:hidden;}
@@ -36,7 +46,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .carte-header{text-align:center;padding:2rem 1.25rem 1.5rem;}
 .carte-header h1{font-family:'Cinzel',serif;font-size:clamp(22px,5vw,42px);font-weight:700;background:linear-gradient(135deg,var(--gold-light),var(--violet-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem;}
 .carte-header p{font-size:15px;font-style:italic;color:var(--text-dim);}
-
 .map-container { position: relative; width: 95%; max-width: 1100px; aspect-ratio: 16/10; margin: 0 auto; background: radial-gradient(circle at center, #1A1530 0%, #080610 100%); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .galaxy-view { position: absolute; inset: 0; transition: opacity 0.4s; }
 .galaxy-view.hidden { opacity: 0; pointer-events: none; transform: scale(1.1); }
@@ -45,7 +54,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .planet-sphere { border-radius: 50%; background: radial-gradient(circle at 30% 30%, currentColor, transparent 80%); box-shadow: inset -10px -10px 20px rgba(0,0,0,0.6), 0 0 15px currentColor; position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: rgba(255,255,255,0.8); }
 .planet-label { margin-top: 8px; font-family: 'Cinzel', serif; font-size: 11px; color: var(--text); background: rgba(8,6,16,0.85); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); white-space: nowrap; backdrop-filter: blur(4px); text-align: center;}
 .pin-status { position: absolute; top: -5px; right: -5px; font-size: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; z-index: 5; }
-
 .surface-view { position: absolute; inset: 0; background: rgba(8,6,16,0.95); backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, transform 0.4s; transform: scale(0.9); z-index: 20; }
 .surface-view.active { opacity: 1; pointer-events: auto; transform: scale(1); }
 .sv-header { position: absolute; top: 1.5rem; left: 1.5rem; right: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; z-index: 30; }
@@ -132,23 +140,28 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 .admin-section-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin:1.5rem 0 1rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
 .error-msg{font-size:13px;color:#E07070;margin-top:.4rem;font-style:italic;}
 
+/* FORMULAIRE CRÉATION QUÊTE */
+.create-form{background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-bottom:1.5rem;}
+.create-form label{display:block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin:0.7rem 0 0.3rem;}
+.create-form textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.5rem .8rem;color:var(--text);font-family:'Crimson Text',serif;font-size:14px;outline:none;min-height:70px;resize:vertical;}
+.create-row{display:flex;gap:0.8rem;flex-wrap:wrap;}
+.create-row > div{flex:1;min-width:140px;}
+
 /* NOTIFICATION */
 #saveNotif {
-  display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  background-color: #FFD700; color: #080610; padding: 12px 24px; border-radius: 8px;
-  font-family: 'Cinzel', serif; font-weight: bold; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); z-index: 9999;
+display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+background-color: #FFD700; color: #080610; padding: 12px 24px; border-radius: 8px;
+font-family: 'Cinzel', serif; font-weight: bold; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;
+box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); z-index: 9999;
 }
-
 @media(max-width:700px){
-  .map-container { aspect-ratio: 1/1.2; }
-  .giant-planet { width: 90%; }
+.map-container { aspect-ratio: 1/1.2; }
+.giant-planet { width: 90%; }
 }
 </style>
 </head>
 <body>
 <div id="stars"></div>
-
 <nav>
   <span class="nav-logo">Axiøm</span>
   <div class="nav-tabs">
@@ -229,7 +242,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,6,16,.92);
 
 <script>
 // ══════════════════════════════════════════
-// DATA — ZONES
+// DATA — ZONES (avec les 3 nouvelles)
 // ══════════════════════════════════════════
 const ZONES_DATA = [
   { id: 'axiom', nom: 'Axiøm', icon: '🏛️', sub: 'Siège du Panthéon — Kenjaku', dieu: 'Kenjaku', color: '#7F77DD', size: 80, x: 50, y: 40, lieux: ['Palais royal', 'Citadelle des dieux', 'Pavillon', 'Quartier administratif'] },
@@ -245,13 +258,20 @@ const ZONES_DATA = [
   { id: 'jardin', nom: 'Jardin Mémoire', icon: '⌛', sub: 'Voie du Souvenir — Undertaker', dieu: 'Undertaker', color: '#9B96B8', size: 45, x: 70, y: 10, lieux: ['Archives mémorielles', 'Le Seuil'] },
   { id: 'kuya', nom: 'Territoire Kuya', icon: '🫗', sub: 'Voie de la Voracité — Kuya', dieu: 'Kuya', color: '#C9A84C', size: 45, x: 30, y: 10, lieux: ['Terres informes', 'Le Cratère'] },
   { id: 'entreterre', nom: 'Entre-Terre', icon: '🩸', sub: 'Ordre Brisé — Marika', dieu: 'Marika', color: '#8B2020', size: 55, x: 50, y: 70, lieux: ['Leyndell', 'Manoir du Lion Rouge', 'Palais de l\'Empaleur', 'Dynastie Mohgwyn', 'Table Ronde'] },
-  { id: 'sugarland', nom: 'Sugar Land', icon: '🍭', sub: 'Royaume Sucré', dieu: 'Inconnu', color: '#FFB6C1', size: 50, x: 30, y: 25, lieux: ['Palais de Sucre', 'Forêt de Guimauve'] }
+  { id: 'sugarland', nom: 'Sugar Land', icon: '🍭', sub: 'Royaume Sucré', dieu: 'Inconnu', color: '#FFB6C1', size: 50, x: 30, y: 25, lieux: ['Palais de Sucre', 'Forêt de Guimauve'] },
+
+  // ═══════════════════════════════════════
+  // NOUVELLES PLANÈTES
+  // ═══════════════════════════════════════
+  { id: 'concordia', nom: 'Concordia', icon: '☯️', sub: 'Royaume de l\'Harmonie — Zhu Jin', dieu: 'Zhu Jin', color: '#4AC9C9', size: 58, x: 72, y: 38, lieux: ['Temple de l\'Harmonie', 'Jardins Suspendus', 'Palais de Zhu Jin', 'Lac Miroir'] },
+  { id: 'empire_lunaire', nom: 'Empire Lunaire', icon: '🌙', sub: 'Empire de la Beauté — Jinshi', dieu: 'Jinshi', color: '#B8B8E0', size: 62, x: 38, y: 52, lieux: ['Palais Lunaire', 'Jardins d\'Argent', 'Observatoire Céleste', 'Salle des Reflets'] },
+  { id: 'ombres_messmer', nom: 'Royaume des Ombres', icon: '🔥', sub: 'Royaume des Ombres — Messmer', dieu: 'Messmer', color: '#8B0000', size: 58, x: 62, y: 62, lieux: ['Château de Messmer', 'Terres Brûlées', 'Autel des Serpents', 'Abysse Noire'] }
 ];
 
 // ══════════════════════════════════════════
-// DATA — QUÊTES
+// DATA — QUÊTES (maintenant mutable)
 // ══════════════════════════════════════════
-const QUETES_DATA = [
+let QUETES_DATA = [
   { id: 'q_43', royaume: 'axiom', nom: '43', rumeur: 'Une fonctionnaire du guichet 3 semble en savoir plus qu\'elle n\'en dit…', desc: 'Une fonctionnaire d\'Axiøm nommée 43 éveille votre curiosité. Son poste semble anodin. Elle ne l\'est pas.', hint: 'Penser à elle suffit parfois à la faire apparaître.', prereqs: [], diff: '★★★☆☆', type: 'principale' },
   { id: 'q_kenjaku', royaume: 'axiom', nom: 'L\'Architecte', rumeur: 'On murmure que Kenjaku cache quelque chose sur la nature même de la causalité…', desc: 'Kenjaku, dieu des dieux, gouverne depuis Axiøm. Approcher sa vérité exige d\'avoir traversé bien des épreuves.', hint: 'Certaines vérités ne se révèlent qu\'à ceux qui ont tout vu.', prereqs: ['Arc de Imu terminé', 'Révélation de Muji obtenue'], diff: '★★★★★', type: 'principale' },
   { id: 'q_morgott', royaume: 'axiom', nom: 'Le Gardien de Herakhet', rumeur: 'Un être silencieux veille sur le jardin de Herakhet. Il laisse passer certains.', desc: 'Morgott garde le jardin de Herakhet avec une rigueur absolue. Gagner sa confiance ouvre des portes.', hint: 'La réponse honnête vaut mieux que la réponse stratégique.', prereqs: [], diff: '★☆☆☆☆', type: 'secondaire' },
@@ -282,7 +302,7 @@ const QUETES_DATA = [
 const BIN_ID = '6a876da9da38895dfefcf1c8';
 const API_KEY = '$2a$10$U4rbBQQTpeVgGtfOzA493uopHCK5m19wkdSFCVZ2YASy01xuPMKhq';
 const ADMIN_PWD = 'fromage';
-const LOCAL_KEY = 'pantheon_data_cloud_v6';
+const LOCAL_KEY = 'pantheon_data_cloud_v7';
 
 let quetesState = {};
 let questCharsState = {};
@@ -292,22 +312,28 @@ let activeTypeFilter = 'all';
 
 async function loadState() {
   const local = localStorage.getItem(LOCAL_KEY);
-  if (local) { 
-    try { 
-      const parsed = JSON.parse(local); 
+  if (local) {
+    try {
+      const parsed = JSON.parse(local);
       if (parsed.quetesState) quetesState = parsed.quetesState;
       if (parsed.questCharsState) questCharsState = parsed.questCharsState;
       if (parsed.locationsState) locationsState = parsed.locationsState;
-    } catch(e){} 
+      if (parsed.quetesData && Array.isArray(parsed.quetesData) && parsed.quetesData.length > 0) {
+        QUETES_DATA = parsed.quetesData;
+      }
+    } catch(e){}
   }
-  
-  QUETES_DATA.forEach(q => { if (!quetesState[q.id]) quetesState[q.id] = 'hidden'; });
+
+  // Assure que toutes les quêtes ont un état
+  QUETES_DATA.forEach(q => {
+    if (!quetesState[q.id]) quetesState[q.id] = 'hidden';
+  });
+
   renderAll();
-  
+
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { 
-      // Remplacement par X-Access-Key pour correspondre à ta clé
-      headers: { 'X-Access-Key': API_KEY } 
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Access-Key': API_KEY }
     });
     if (res.ok) {
       const data = await res.json();
@@ -315,19 +341,32 @@ async function loadState() {
         if (data.record.quetesState) quetesState = data.record.quetesState;
         if (data.record.questCharsState) questCharsState = data.record.questCharsState;
         if (data.record.locationsState) locationsState = data.record.locationsState;
-        localStorage.setItem(LOCAL_KEY, JSON.stringify({quetesState, questCharsState, locationsState}));
+        if (data.record.quetesData && Array.isArray(data.record.quetesData) && data.record.quetesData.length > 0) {
+          QUETES_DATA = data.record.quetesData;
+        }
+        // Réassure les états
+        QUETES_DATA.forEach(q => {
+          if (!quetesState[q.id]) quetesState[q.id] = 'hidden';
+        });
+        localStorage.setItem(LOCAL_KEY, JSON.stringify({quetesState, questCharsState, locationsState, quetesData: QUETES_DATA}));
         renderAll();
       }
     } else {
       console.error("Erreur de lecture en ligne :", res.status);
     }
-  } catch (err) { console.error('Erreur cloud', err); }
+  } catch (err) {
+    console.error('Erreur cloud', err);
+  }
 }
 
 async function saveState() {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify({quetesState, questCharsState, locationsState}));
-  
-  // Affiche la notification jaune
+  localStorage.setItem(LOCAL_KEY, JSON.stringify({
+    quetesState,
+    questCharsState,
+    locationsState,
+    quetesData: QUETES_DATA
+  }));
+
   const notif = document.getElementById('saveNotif');
   notif.style.display = 'block';
   setTimeout(() => { notif.style.display = 'none'; }, 3000);
@@ -335,42 +374,45 @@ async function saveState() {
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
       method: 'PUT',
-      headers: { 
-        'Content-Type': 'application/json', 
-        // Remplacement par X-Access-Key pour correspondre à ta clé
-        'X-Access-Key': API_KEY 
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Key': API_KEY
       },
-      body: JSON.stringify({ quetesState, questCharsState, locationsState, lastUpdate: new Date().toISOString() })
+      body: JSON.stringify({
+        quetesState,
+        questCharsState,
+        locationsState,
+        quetesData: QUETES_DATA,
+        lastUpdate: new Date().toISOString()
+      })
     });
-    
     if (!res.ok) {
       alert("Erreur de sauvegarde en ligne. La modification est sauvegardée sur ton appareil, mais pas pour les autres joueurs.");
     }
-  } catch(e) { 
+  } catch(e) {
     console.error('Erreur de sauvegarde cloud', e);
     alert("Impossible de joindre le serveur. Vérifie ta connexion.");
   }
 }
 
 // ══════════════════════════════════════════
-// CARTE 
+// CARTE
 // ══════════════════════════════════════════
 function renderGalaxie() {
   const galaxyView = document.getElementById('galaxy-view');
   galaxyView.innerHTML = '';
-  
   ZONES_DATA.forEach(z => {
     const quetes = QUETES_DATA.filter(q => q.royaume === z.id);
     const actives = quetes.filter(q => quetesState[q.id] === 'active').length;
     const rumeurs = quetes.filter(q => quetesState[q.id] === 'rumeur').length;
-    
     let badge = '';
     if (actives > 0) badge = `<div class="pin-status" style="color:var(--gold); border-color:var(--gold);">${actives}</div>`;
     else if (rumeurs > 0) badge = `<div class="pin-status" style="color:var(--violet); border-color:var(--violet);">?</div>`;
-
+    
     const node = document.createElement('div');
     node.className = 'planet-node';
-    node.style.left = z.x + '%'; node.style.top = z.y + '%';
+    node.style.left = z.x + '%';
+    node.style.top = z.y + '%';
     node.style.color = z.color;
     node.onclick = () => openPlanet(z);
     node.innerHTML = `${badge}<div class="planet-sphere" style="width:${z.size}px; height:${z.size}px; background-color:${z.color}33;">${z.icon}</div><div class="planet-label">${z.nom}</div>`;
@@ -388,7 +430,7 @@ function openPlanet(zone) {
   const giant = document.getElementById('giant-planet');
   giant.style.backgroundColor = `${zone.color}22`;
   giant.style.boxShadow = `inset -20px -20px 50px rgba(0,0,0,0.8), 0 0 100px ${zone.color}44`;
-  giant.innerHTML = ''; 
+  giant.innerHTML = '';
   
   zone.lieux.forEach((lieu, index) => {
     const angle = (index / zone.lieux.length) * Math.PI * 2;
@@ -400,7 +442,7 @@ function openPlanet(zone) {
     
     const charsHere = locationsState[`${zone.id}|${lieu}`];
     const charsHtml = charsHere ? `<div style="color:var(--gold); font-size:10px; margin-top:2px;">[ ${charsHere} ]</div>` : '';
-
+    
     pin.innerHTML = `<div class="loc-dot" style="background:${zone.color}; box-shadow:0 0 10px ${zone.color}"></div><div class="loc-label">${lieu}${charsHtml}</div>`;
     giant.appendChild(pin);
   });
@@ -408,11 +450,15 @@ function openPlanet(zone) {
   const questBtn = document.getElementById('sv-quest-btn');
   if(QUETES_DATA.filter(q => q.royaume === zone.id).length > 0) {
     questBtn.style.display = 'inline-block';
-    questBtn.onclick = () => { closePlanet(); showPage('journal'); setFilter(zone.id); };
+    questBtn.onclick = () => {
+      closePlanet();
+      showPage('journal');
+      setFilter(zone.id);
+    };
   } else {
     questBtn.style.display = 'none';
   }
-
+  
   surface.classList.add('active');
 }
 
@@ -431,15 +477,24 @@ function dotClass(state) {
   return 'dot-hidden';
 }
 
-function setFilter(f) { activeFilter = f; renderJournal(); }
+function setFilter(f) {
+  activeFilter = f;
+  renderJournal();
+}
 
 function renderJournal() {
   const fr = document.getElementById('filter-row');
   const list = document.getElementById('journal-list-content');
-  const filters = [{id:'all',label:'Toutes'}, {id:'principale',label:'Principales'}, {id:'secondaire',label:'Secondaires'}, {id:'active',label:'En cours'}, {id:'complete',label:'Terminées'}];
   
+  const filters = [
+    {id:'all',label:'Toutes'},
+    {id:'principale',label:'Principales'},
+    {id:'secondaire',label:'Secondaires'},
+    {id:'active',label:'En cours'},
+    {id:'complete',label:'Terminées'}
+  ];
   fr.innerHTML = filters.map(f => `<button class="filter-btn ${activeTypeFilter===f.id?'active':''}" onclick="activeTypeFilter='${f.id}'; activeFilter='all'; renderJournal();">${f.label}</button>`).join('');
-
+  
   const visible = QUETES_DATA.filter(q => {
     const st = quetesState[q.id];
     if (st === 'hidden' || st === 'disabled') return false;
@@ -450,8 +505,11 @@ function renderJournal() {
     if (activeTypeFilter === 'complete' && st !== 'complete') return false;
     return true;
   });
-
-  if (visible.length === 0) { list.innerHTML = '<p style="font-size:15px;color:var(--text-faint);font-style:italic;text-align:center;padding:2rem;">Aucune entrée trouvée.</p>'; return; }
+  
+  if (visible.length === 0) {
+    list.innerHTML = '<p style="font-size:15px;color:var(--text-faint);font-style:italic;text-align:center;padding:2rem;">Aucune entrée trouvée.</p>';
+    return;
+  }
   
   list.innerHTML = visible.map(q => {
     const st = quetesState[q.id];
@@ -462,9 +520,15 @@ function renderJournal() {
     if(questCharsState[q.id] && st!=='rumeur') {
       charsHtml = `<div style="margin-top:0.8rem; font-size:13px; color:var(--gold); border-left:2px solid var(--gold); padding-left:0.5rem;"><span style="color:var(--text-faint)">Impliqués :</span> ${questCharsState[q.id]}</div>`;
     }
-
-    const desc = st==='rumeur' ? `<p class="je-desc" style="font-style:italic;color:var(--violet-light);">${q.rumeur}</p>` : `<p class="je-desc">${q.desc}</p>${q.hint?`<p class="je-hint">💡 ${q.hint}</p>`:''}`;
-    const prereqHtml = (q.prereqs.length>0 && st!=='rumeur') ? `<div class="je-prereqs"><p class="prereq-label">Prérequis</p>${q.prereqs.map(p=>`<div class="prereq-item">${p}</div>`).join('')}</div>`:'';
+    
+    const desc = st==='rumeur' 
+      ? `<p class="je-desc" style="font-style:italic;color:var(--violet-light);">${q.rumeur}</p>` 
+      : `<p class="je-desc">${q.desc}</p>${q.hint?`<p class="je-hint">💡 ${q.hint}</p>`:''}`;
+    
+    const prereqHtml = (q.prereqs && q.prereqs.length>0 && st!=='rumeur') 
+      ? `<div class="je-prereqs"><p class="prereq-label">Prérequis</p>${q.prereqs.map(p=>`<div class="prereq-item">${p}</div>`).join('')}</div>` 
+      : '';
+    
     return `
       <div class="journal-entry">
         <div class="je-header" onclick="toggleEntry('je-${q.id}',this)">
@@ -490,13 +554,13 @@ function renderTableau() {
   const hidden = QUETES_DATA.filter(q=>quetesState[q.id]==='hidden'||quetesState[q.id]==='disabled');
   const total = QUETES_DATA.filter(q=>quetesState[q.id]!=='disabled').length;
   const pct = total>0?Math.round(completes.length/total*100):0;
-
+  
   document.getElementById('stats-row').innerHTML = `
     <div class="stat-box"><div class="stat-num">${actives.length}</div><div class="stat-label">En cours</div></div>
     <div class="stat-box"><div class="stat-num">${completes.length}</div><div class="stat-label">Terminées</div></div>
     <div class="stat-box"><div class="stat-num">${hidden.length}</div><div class="stat-label">Inconnues</div></div>
     <div class="stat-box"><div class="stat-num">${pct}%</div><div class="stat-label">Progression</div></div>`;
-
+  
   const tc = document.getElementById('tableau-content');
   tc.innerHTML = '';
   
@@ -510,28 +574,95 @@ function renderTableau() {
       }).join('')
     }</div></div>`;
   }
+  
   section('Quêtes en cours', actives.filter(q=>quetesState[q.id]==='active'), 'dot-active');
   section('Rumeurs', actives.filter(q=>quetesState[q.id]==='rumeur'), 'dot-rumeur');
   section('Terminées', completes, 'dot-complete');
 }
 
-function renderAll() { 
-  renderGalaxie(); 
-  renderJournal(); 
-  renderTableau(); 
-  if(document.getElementById('modal-admin').classList.contains('open')) renderAdminPanel(); 
+function renderAll() {
+  renderGalaxie();
+  renderJournal();
+  renderTableau();
+  if(document.getElementById('modal-admin').classList.contains('open')) renderAdminPanel();
 }
 
 // ══════════════════════════════════════════
-// ADMIN PANEL
+// ADMIN PANEL (avec création de quêtes)
 // ══════════════════════════════════════════
 function renderAdminPanel() {
   const content = document.getElementById('admin-panel-content');
   let html = '';
+
+  // ─── FORMULAIRE DE CRÉATION ───
+  html += `
+  <div class="create-form">
+    <div class="admin-section-title" style="margin-top:0;">✦ Créer une nouvelle quête</div>
+    
+    <label>Nom de la quête</label>
+    <input class="admin-input" id="new-q-nom" placeholder="Ex: Le Secret de Zhu Jin">
+    
+    <div class="create-row">
+      <div>
+        <label>Royaume / Zone</label>
+        <select class="admin-input" id="new-q-royaume">
+          ${ZONES_DATA.map(z => `<option value="${z.id}">${z.icon} ${z.nom}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label>Type</label>
+        <select class="admin-input" id="new-q-type">
+          <option value="principale">Principale</option>
+          <option value="secondaire">Secondaire</option>
+        </select>
+      </div>
+      <div>
+        <label>Difficulté</label>
+        <select class="admin-input" id="new-q-diff">
+          <option value="☆☆☆☆☆">☆☆☆☆☆</option>
+          <option value="★☆☆☆☆">★☆☆☆☆</option>
+          <option value="★★☆☆☆">★★☆☆☆</option>
+          <option value="★★★☆☆" selected>★★★☆☆</option>
+          <option value="★★★★☆">★★★★☆</option>
+          <option value="★★★★★">★★★★★</option>
+        </select>
+      </div>
+    </div>
+    
+    <label>Message de rumeur (affiché quand statut = Rumeur)</label>
+    <textarea id="new-q-rumeur" placeholder="On murmure que…"></textarea>
+    
+    <label>Description (quand la quête est Active ou Terminée)</label>
+    <textarea id="new-q-desc" placeholder="Description complète de la quête…"></textarea>
+    
+    <label>Indice / Hint (optionnel)</label>
+    <input class="admin-input" id="new-q-hint" placeholder="💡 Un petit coup de pouce…">
+    
+    <label>Prérequis (séparés par des virgules)</label>
+    <input class="admin-input" id="new-q-prereqs" placeholder="Ex: Arc de Ran terminé, Avoir rencontré 43">
+    
+    <div class="create-row" style="margin-top:1rem;">
+      <div>
+        <label>Statut initial</label>
+        <select class="admin-input" id="new-q-status">
+          <option value="hidden">Cachée</option>
+          <option value="rumeur" selected>Rumeur</option>
+          <option value="active">Active</option>
+          <option value="complete">Terminée</option>
+          <option value="disabled">Désactivée</option>
+        </select>
+      </div>
+    </div>
+    
+    <button class="btn-primary" style="margin-top:1.2rem;width:100%;" onclick="createNewQuest()">✦ Créer la quête</button>
+  </div>
+  `;
+
+  // ─── LISTE DES QUÊTES PAR ZONE ───
   ZONES_DATA.forEach(r => {
     html += `<div class="admin-section-title">${r.icon} ${r.nom}</div>`;
     
-    // GESTION DES LIEUX (SOUS-ZONES)
+    // GESTION DES LIEUX
     if (r.lieux && r.lieux.length > 0) {
       html += `<div style="margin-bottom: 1rem; padding: 0.8rem; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--border);">`;
       html += `<div style="font-size: 10px; color: var(--gold-dim); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em;">▶ Présences par Sous-Zone</div>`;
@@ -539,14 +670,14 @@ function renderAdminPanel() {
         const locKey = `${r.id}|${lieu}`;
         const currentChars = locationsState[locKey] || '';
         html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
-                   <span style="font-size: 13px; color: var(--text-dim);">${lieu}</span>
-                   <input type="text" class="admin-input" style="width: 250px; padding: 0.4rem 0.6rem;" placeholder="Persos présents (ex: Bob, Alice)..." value="${currentChars}" onchange="updateLocation('${locKey}', this.value)">
-                 </div>`;
+          <span style="font-size: 13px; color: var(--text-dim);">${lieu}</span>
+          <input type="text" class="admin-input" style="width: 250px; padding: 0.4rem 0.6rem;" placeholder="Persos présents (ex: Bob, Alice)..." value="${currentChars}" onchange="updateLocation('${locKey}', this.value)">
+        </div>`;
       });
       html += `</div>`;
     }
-
-    // GESTION DES QUETES
+    
+    // GESTION DES QUÊTES
     const qs = QUETES_DATA.filter(q=>q.royaume===r.id);
     if (qs.length > 0) {
       html += `<div style="font-size: 10px; color: var(--gold-dim); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em;">▶ État des Quêtes</div>`;
@@ -559,24 +690,99 @@ function renderAdminPanel() {
         const btns = states.map(s=>`<button class="aqr-btn ${st===s?'active-btn':''}" onclick="setQueteState('${q.id}','${s}')">${labels[s]}</button>`).join('');
         
         html += `<div class="admin-quete-row" style="flex-direction: column; align-items: stretch;">
-                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap;">
-                     <span class="aqr-name">${q.nom}</span>
-                     <span class="aqr-status ${statusCls[st]}">${labels[st]}</span>
-                   </div>
-                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-                     <input type="text" class="admin-input" style="width: 200px; padding: 0.4rem 0.6rem; font-size: 12px;" placeholder="Impliqués dans la quête..." value="${chars}" onchange="updateQuestChars('${q.id}', this.value)">
-                     <div class="aqr-btns">${btns}</div>
-                   </div>
-                 </div>`;
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap;">
+            <span class="aqr-name">${q.nom}</span>
+            <span class="aqr-status ${statusCls[st]}">${labels[st]}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <input type="text" class="admin-input" style="width: 200px; padding: 0.4rem 0.6rem; font-size: 12px;" placeholder="Impliqués dans la quête..." value="${chars}" onchange="updateQuestChars('${q.id}', this.value)">
+            <div class="aqr-btns">${btns}</div>
+          </div>
+        </div>`;
       });
+    } else {
+      html += `<p style="font-size:13px;color:var(--text-faint);font-style:italic;margin-bottom:1rem;">Aucune quête sur cette planète pour l'instant.</p>`;
     }
   });
+  
   content.innerHTML = html;
 }
 
-function setQueteState(id, state) { quetesState[id] = state; saveState(); renderAll(); }
-function updateQuestChars(id, chars) { questCharsState[id] = chars; saveState(); renderAll(); }
-function updateLocation(locKey, chars) { locationsState[locKey] = chars; saveState(); renderAll(); }
+function createNewQuest() {
+  const nom = document.getElementById('new-q-nom').value.trim();
+  const royaume = document.getElementById('new-q-royaume').value;
+  const type = document.getElementById('new-q-type').value;
+  const diff = document.getElementById('new-q-diff').value;
+  const rumeur = document.getElementById('new-q-rumeur').value.trim();
+  const desc = document.getElementById('new-q-desc').value.trim();
+  const hint = document.getElementById('new-q-hint').value.trim();
+  const prereqsRaw = document.getElementById('new-q-prereqs').value.trim();
+  const status = document.getElementById('new-q-status').value;
+
+  if (!nom) {
+    alert('Le nom de la quête est obligatoire, mon cher.');
+    return;
+  }
+  if (!rumeur && status === 'rumeur') {
+    alert('Si tu la mets en rumeur, il faut un message de rumeur… logique non ?');
+    return;
+  }
+
+  const id = 'q_' + nom.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '')
+    + '_' + Date.now().toString().slice(-5);
+
+  const prereqs = prereqsRaw 
+    ? prereqsRaw.split(',').map(p => p.trim()).filter(p => p.length > 0) 
+    : [];
+
+  const newQuest = {
+    id,
+    royaume,
+    nom,
+    rumeur: rumeur || '…',
+    desc: desc || 'Description à venir.',
+    hint: hint || '',
+    prereqs,
+    diff,
+    type
+  };
+
+  QUETES_DATA.push(newQuest);
+  quetesState[id] = status;
+  
+  saveState();
+  renderAll();
+  
+  // Reset form
+  document.getElementById('new-q-nom').value = '';
+  document.getElementById('new-q-rumeur').value = '';
+  document.getElementById('new-q-desc').value = '';
+  document.getElementById('new-q-hint').value = '';
+  document.getElementById('new-q-prereqs').value = '';
+  
+  alert(`Quête « ${nom} » créée avec succès !`);
+}
+
+function setQueteState(id, state) {
+  quetesState[id] = state;
+  saveState();
+  renderAll();
+}
+
+function updateQuestChars(id, chars) {
+  questCharsState[id] = chars;
+  saveState();
+  renderAll();
+}
+
+function updateLocation(locKey, chars) {
+  locationsState[locKey] = chars;
+  saveState();
+  renderAll();
+}
 
 // ══════════════════════════════════════════
 // NAVIGATION
@@ -585,18 +791,34 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  document.querySelectorAll('.nav-tab').forEach(t=>{ if(t.textContent.toLowerCase().includes(name.slice(0,4))) t.classList.add('active'); });
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    if(t.textContent.toLowerCase().includes(name.slice(0,4))) t.classList.add('active');
+  });
   if (name==='journal') renderJournal();
   if (name==='tableau') renderTableau();
 }
 
-function openAdmin() { document.getElementById('modal-login').classList.add('open'); document.getElementById('admin-pwd').focus(); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); document.getElementById('admin-pwd').value=''; document.getElementById('pwd-error').style.display='none'; }
+function openAdmin() {
+  document.getElementById('modal-login').classList.add('open');
+  document.getElementById('admin-pwd').focus();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.getElementById('admin-pwd').value='';
+  document.getElementById('pwd-error').style.display='none';
+}
 
 function checkPwd() {
   if (document.getElementById('admin-pwd').value === ADMIN_PWD) {
-    closeModal('modal-login'); renderAdminPanel(); document.getElementById('modal-admin').classList.add('open');
-  } else { document.getElementById('pwd-error').style.display='block'; document.getElementById('admin-pwd').value=''; document.getElementById('admin-pwd').focus(); }
+    closeModal('modal-login');
+    renderAdminPanel();
+    document.getElementById('modal-admin').classList.add('open');
+  } else {
+    document.getElementById('pwd-error').style.display='block';
+    document.getElementById('admin-pwd').value='';
+    document.getElementById('admin-pwd').focus();
+  }
 }
 
 (function(){
